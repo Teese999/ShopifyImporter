@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using ShopifyImporter.Contracts;
+﻿using ShopifyImporter.Contracts;
 using ShopifyImporter.Services;
 using System;
 using System.Collections.Generic;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 using Unity;
 using Unity.Lifetime;
 
-namespace ShopifyImporterConsole
+namespace ShopifyImporter.Console
 {
     public class ContainerConfiguration
     {

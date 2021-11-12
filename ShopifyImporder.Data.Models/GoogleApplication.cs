@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShopifyImporder.Data.Models
+namespace ShopifyImporter.Integrations.GoogleDrive
 {
     public class GoogleApplication
     {
