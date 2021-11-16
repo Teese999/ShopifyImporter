@@ -16,8 +16,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ShopifyImporter.Contracts\ShopifyImporter.Contracts.csproj" />
-    <ProjectReference Include="..\ShopifyImporter.Helpers.Auth\ShopifyImporter.Helpers.csproj" />
+    <ProjectReference Include="..\ShopifyImporter.Helpers.AuthHelper\ShopifyImporter.Helpers.AuthHelper.csproj" />
     <ProjectReference Include="..\ShopifyImporter.Services\ShopifyImporter.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ShopifyImporter.Helpers.AuthentificationHelper">
+      <HintPath>..\..\ShopifyImporter.Helpers.AuthentificationHelper\ShopifyImporter.Helpers.AuthentificationHelper\bin\Debug\ShopifyImporter.Helpers.AuthentificationHelper.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

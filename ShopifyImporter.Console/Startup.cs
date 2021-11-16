@@ -8,12 +8,13 @@ using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using ShopifyImporder.Data.Models;
 using ShopifyImporter.Contracts;
-using ShopifyImporter.Helpers;
+using ShopifyImporter.Helpers.AuthHelper;
 using ShopifyImporter.Integrations.GoogleDrive;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -30,11 +31,24 @@ namespace ShopifyImporter.Console
         public void StartProgram()
         {
             //Configure container
-            ConfigureContainer(_container);
-            
+            ConfigureContainer(_container);         
             var config = LoadAppSettings();
-            var client = GetAuthenticatedGraphClient(config);
-            var graphRequest = client.Drives.Request();
+            var clientId = config["applicationId"];
+
+            var token = TokenGenerator.GetToken(clientId);
+
+
+            //GraphClientBuilder.GetAuthenticatedClient(token, out _graphClient);
+
+
+            //var httpClient = new HttpClient();
+            //var httpRequest = new HttpRequestMessage(HttpMethod.Get, $"https://login.microsoftonline.com/organizations/oauth2/v2.0/{token}");
+            //httpRequest.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+            //var response = httpClient.SendAsync(httpRequest).Result;
+
+
+            var graphRequest = _graphClient.Drive.Items.Request();
 
             var results = graphRequest.GetAsync().Result;
 
@@ -59,30 +73,30 @@ namespace ShopifyImporter.Console
                 .Build();
             return config;
         }
-        private static IAuthenticationProvider CreateAutorizationProvider(IConfigurationRoot config)
-        {
-            var clientId = config["applicationId"];
-            var clientSecret = config["applicationSecret"];
-            var redirectUri = config["redirectUri"];
-            var tenant = config["tenant"];
-            var authority = $"https://login.microsoftonline.com/{tenant}/.well-known/openid-configuration";
-            List<string> scopes = new();
-            scopes.Add("https://graph.microsoft.com/.default");
-            var cca = ConfidentialClientApplicationBuilder.Create(clientId)
-                //.WithAdfsAuthority(authority)
-                .WithTenantId(tenant)
-                .WithRedirectUri(redirectUri)
-                .WithClientSecret(clientSecret)
-                .Build();
-            return new AuthenticationProvider(cca, scopes.ToArray());
-        }
+        //private static IAuthenticationProvider CreateAutorizationProvider(IConfigurationRoot config)
+        //{
+        //    var clientId = config["applicationId"];
+        //    var clientSecret = config["applicationSecret"];
+        //    var redirectUri = config["redirectUri"];
+        //    var tenant = config["tenant"];
+        //    var authority = $"https://login.microsoftonline.com/{tenant}/.well-known/openid-configuration";
+        //    List<string> scopes = new();
+        //    scopes.Add("Files.ReadWrite.All");
+        //    var cca = ConfidentialClientApplicationBuilder.Create(clientId)
+        //        //.WithAdfsAuthority(authority)
+        //        .WithTenantId(tenant)
+        //        .WithRedirectUri("urn:ietf:wg:oauth:2.0:oob")
+        //        .WithClientSecret(clientSecret)
+        //        .Build();
+        //    return new AuthenticationProvider(cca, scopes.ToArray());
+        //}
 
-        private static GraphServiceClient GetAuthenticatedGraphClient(IConfigurationRoot config)
-        {
-            var authenticationProvider = CreateAutorizationProvider(config);
-            _graphClient = new GraphServiceClient(authenticationProvider);
-            return _graphClient;
-        }
+        //private static GraphServiceClient GetAuthenticatedGraphClient(IConfigurationRoot config)
+        //{
+        //    var authenticationProvider = CreateAutorizationProvider(config);
+        //    _graphClient = new GraphServiceClient(authenticationProvider);
+        //    return _graphClient;
+        //}
     }
 }
 
