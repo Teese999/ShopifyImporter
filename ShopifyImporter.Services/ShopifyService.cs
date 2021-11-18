@@ -3,6 +3,7 @@ using RestSharp;
 using RestSharp.Authenticators;
 using ShopifyImporter.Contracts;
 using ShopifyImporter.Models;
+using ShopifyImporter.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,14 +15,21 @@ namespace ShopifyImporter.Services
 
     public class ShopifyService : IShopifyService
     {
+        private Settings _settings;
+
+        public ShopifyService(Settings settings)
+        {
+            _settings = settings;
+        }
+
         public ShopifyRoot GetData()
         {
             ShopifyRoot shopifyRoot = new();
 
 
             //configure RestClient
-            var client = new RestClient(Settings.ShopUrl);
-            client.Authenticator = new HttpBasicAuthenticator(Settings.ShopApiKey, Settings.ShopAccessToken);
+            var client = new RestClient(_settings.Shopify.ShopUrl);
+            client.Authenticator = new HttpBasicAuthenticator(_settings.Shopify.ShopApiKey, _settings.Shopify.ShopAccessToken);
 
             string resource = null;
             RestRequest request = new();
@@ -79,8 +87,8 @@ namespace ShopifyImporter.Services
             var availableAdjustment = newAvailableValue - availableCurrentValue;
 
             //updating on shopify
-            var client = new RestClient(Settings.ShopUrl);
-            client.Authenticator = new HttpBasicAuthenticator(Settings.ShopApiKey, Settings.ShopAccessToken);
+            var client = new RestClient(_settings.Shopify.ShopUrl);
+            client.Authenticator = new HttpBasicAuthenticator(_settings.Shopify.ShopApiKey, _settings.Shopify.ShopAccessToken);
             string resource = "/admin/api/2021-10/inventory_levels/adjust.json";
             var requestres = new RestRequest(resource, Method.POST);
             requestres.AddUrlSegment("status", "open");

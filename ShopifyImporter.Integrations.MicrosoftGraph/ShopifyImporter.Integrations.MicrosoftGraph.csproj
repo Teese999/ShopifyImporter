@@ -9,4 +9,8 @@
     <PackageReference Include="Microsoft.Identity.Client.Extensions.Msal" Version="2.19.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ShopifyImporter.Contracts\ShopifyImporter.Contracts.csproj" />
+  </ItemGroup>
+
 </Project>

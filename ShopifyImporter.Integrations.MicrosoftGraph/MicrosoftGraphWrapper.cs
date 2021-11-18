@@ -1,6 +1,7 @@
 ﻿using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensions.Msal;
+using ShopifyImporter.Services.Contracts;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -11,14 +12,18 @@ namespace ShopifyImporter.Integrations.MicrosoftGraph
 {
     public class MicrosoftGraphWrapper
     {
-        private string _clientId = "ab7f5eff-4e4e-4d12-b9bc-5c28531bd599";
-        private string[] _scopes = new[] { "offline_access", "User.Read", "Files.ReadWrite.All" };
+        private string _clientId;
+        private string[] _scopes;
+        private string _msalCacheFilename;
 
         private IPublicClientApplication _identityClientApp;
         private static GraphServiceClient _graphClient;
-        public MicrosoftGraphWrapper()
+        public MicrosoftGraphWrapper(Settings settings)
         {
-            _identityClientApp = PublicClientApplicationBuilder.Create(_clientId).WithRedirectUri("http://localhost").Build();
+            _clientId = settings.Azure.MicrosoftGraph.AppClientId;
+            _scopes = settings.Azure.MicrosoftGraph.Scopes;
+            _msalCacheFilename = settings.Azure.MicrosoftGraph.MsalCacheFileName;
+            _identityClientApp = PublicClientApplicationBuilder.Create(_clientId).WithRedirectUri(settings.Azure.MicrosoftGraph.AppRedirectUrl).Build();
         }
 
         public async Task<GraphServiceClient> GetAuthenticatedClient()
@@ -45,7 +50,7 @@ namespace ShopifyImporter.Integrations.MicrosoftGraph
             return _graphClient;
         }
 
-        private static async Task<MsalCacheHelper> CreateCacheHelperAsync()
+        private async Task<MsalCacheHelper> CreateCacheHelperAsync()
         {
             StorageCreationProperties storageProperties = ConfigureSecureStorage();
             MsalCacheHelper cacheHelper = await MsalCacheHelper.CreateAsync(storageProperties).ConfigureAwait(false);
@@ -53,10 +58,10 @@ namespace ShopifyImporter.Integrations.MicrosoftGraph
             return cacheHelper;
         }
 
-        private static StorageCreationProperties ConfigureSecureStorage()
+        private StorageCreationProperties ConfigureSecureStorage()
         {
             return new StorageCreationPropertiesBuilder(
-                                   "myapp_msal_cache1.txt",
+                                   _msalCacheFilename,
                                    MsalCacheHelper.UserRootDirectory)
                                .Build();
 

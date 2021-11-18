@@ -6,9 +6,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Graph" Version="4.10.0" />
+    <PackageReference Include="Unity" Version="5.11.10" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ShopifyImporter.Contracts\ShopifyImporter.Contracts.csproj" />
     <ProjectReference Include="..\ShopifyImporter.Integrations.MicrosoftGraph\ShopifyImporter.Integrations.MicrosoftGraph.csproj" />
   </ItemGroup>
 

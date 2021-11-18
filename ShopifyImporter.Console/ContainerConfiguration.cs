@@ -17,6 +17,9 @@ namespace ShopifyImporter.Console
         {
             container.RegisterType<IShopifyService, ShopifyService>(new TLifetime());
             container.RegisterType<IExcelParserService, ExcelParserService>(new TLifetime());
+            container.RegisterType<IFileService, FileService>(new TLifetime());
+
+            Services.ContainerConfiguration.RegisterTypes<TLifetime>(container);
         }
     }
 }

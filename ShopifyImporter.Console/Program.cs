@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
+using ShopifyImporter.Contracts;
 using ShopifyImporter.Models;
+using ShopifyImporter.Services;
+using ShopifyImporter.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,18 +10,18 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity;
+using Unity.Lifetime;
 
 namespace ShopifyImporter.Console
 {
     public class Program
     {
-        static void Main(string[] args)
-        {
-            Configure();
-            new Startup().Run();
-        }
 
-        private static void Configure()
+        private static IUnityContainer _container = new UnityContainer();
+        private static Report _report = new();
+
+        static async Task Main(string[] args)
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -26,10 +29,21 @@ namespace ShopifyImporter.Console
                 .AddEnvironmentVariables()
                 .Build();
 
-            Settings.ShopUrl = (builder as IConfigurationRoot)["shopUrl"];
-            Settings.ShopAccessToken = (builder as IConfigurationRoot)["shopAccessToken"];
-            Settings.ShopApiKey = (builder as IConfigurationRoot)["shopApiKey"];
+            var settings = builder.GetSection("Settings");
+            _container.RegisterInstance(settings.Get<Settings>());
 
+            ContainerConfiguration.RegisterTypes<HierarchicalLifetimeManager>(_container);
+
+            //var shopifyData = _container.Resolve<IShopifyService>().GetData();
+            //var updateList = _container.Resolve<IExcelParserService>().GetUpdatingList(@"C:\Schmidts Inventory Report.xlsx", _report);
+            //_container.Resolve<IShopifyService>().UpdateProductAvailable("222333", 10, shopifyData, _report);
+
+            System.Console.WriteLine("Hello World!");
+            var files = await _container.Resolve<IFileService>().GetFiles();
+            foreach (var file in files)
+            {
+                System.Console.WriteLine($"Id: {file.Item1}, Name: {file.Item2}");
+            }
         }
     }
 }
