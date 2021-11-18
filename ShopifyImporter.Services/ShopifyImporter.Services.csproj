@@ -5,16 +5,20 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.55.0.2502" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
     <PackageReference Include="Microsoft.Graph.Core" Version="2.0.5" />
+    <PackageReference Include="RestSharp" Version="106.13.0" />
     <PackageReference Include="Unity" Version="5.11.10" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ShopifyImporder.Data.Models\ShopifyImpoter.Integrations.GoogleDrive.csproj" />
     <ProjectReference Include="..\ShopifyImporter.Contracts\ShopifyImporter.Contracts.csproj" />
+    <ProjectReference Include="..\ShopifyImporter.Models\ShopifyImporter.Models.csproj" />
   </ItemGroup>
 
 </Project>

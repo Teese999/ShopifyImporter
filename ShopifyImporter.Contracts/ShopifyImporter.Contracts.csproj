@@ -11,4 +11,8 @@
     <PackageReference Include="Microsoft.Graph.Core" Version="2.0.5" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ShopifyImporter.Models\ShopifyImporter.Models.csproj" />
+  </ItemGroup>
+
 </Project>

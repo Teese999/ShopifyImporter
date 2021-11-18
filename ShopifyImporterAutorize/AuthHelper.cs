@@ -7,16 +7,12 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShopifyImporter.Helpers.AuthHelper
+namespace ShopifyImporter.Autorize
 {
-    public class TokenGenerator
+    public class AuthHelper
     {
         // The Client ID is used by the application to uniquely identify itself to the v2.0 authentication endpoint.
-        static string clientId = "c982a01c-cdb7-4be2-9adf-c80ec79aac2f";
         public static string[] Scopes = { "Files.ReadWrite.All" };
-
-        public static PublicClientApplication IdentityClientApp = new PublicClientApplication("clientId");
-
         public static string TokenForUser = null;
         public static DateTimeOffset Expiration;
 
@@ -36,8 +32,7 @@ namespace ShopifyImporter.Helpers.AuthHelper
                         new DelegateAuthenticationProvider(
                             async (requestMessage) =>
                             {
-                                var token = await GetTokenForUserAsync();
-                                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", token);
+                                requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", TokenForUser);
                                 // This header has been added to identify our sample in the Microsoft Graph service.  If extracting this code for your project please remove.
                                 //requestMessage.Headers.Add("SampleID", "uwp-csharp-apibrowser-sample");
 
@@ -59,8 +54,9 @@ namespace ShopifyImporter.Helpers.AuthHelper
         /// Get Token for User.
         /// </summary>
         /// <returns>Token for user.</returns>
-        public static async Task<string> GetTokenForUserAsync()
+        public static async Task<string> GetTokenForUserAsync(string clientId)
         {
+            PublicClientApplication IdentityClientApp = new PublicClientApplication(clientId);
             AuthenticationResult authResult;
             try
             {
@@ -83,4 +79,3 @@ namespace ShopifyImporter.Helpers.AuthHelper
         }
     }
 }
-
