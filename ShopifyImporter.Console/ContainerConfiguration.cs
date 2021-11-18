@@ -15,7 +15,8 @@ namespace ShopifyImporter.Console
         public static void RegisterTypes<TLifetime>(IUnityContainer container)
            where TLifetime : ITypeLifetimeManager, new()
         {
-            container.RegisterType<IGoogleService, GoogleService>(new TLifetime());
+            container.RegisterType<IShopifyService, ShopifyService>(new TLifetime());
+            container.RegisterType<IExcelParserService, ExcelParserService>(new TLifetime());
         }
     }
 }
