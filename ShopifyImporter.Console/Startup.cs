@@ -1,4 +1,5 @@
 ﻿using ShopifyImporter.Contracts;
+using ShopifyImporter.Models;
 using ShopifyImporter.Services;
 using System;
 using System.Collections.Generic;
@@ -13,13 +14,14 @@ namespace ShopifyImporter.Console
     public class Startup
     {
         private IUnityContainer _container = new UnityContainer();
+        private Report _report = new();
         public async void Run()
         {
             ConfigureContainer(_container);
 
             var shopifyData = _container.Resolve<IShopifyService>().GetData();
-            var updateList = _container.Resolve<IExcelParserService>().GetUpdatingList(@"C:\Schmidts Inventory Report.xlsx");
-            _container.Resolve<IShopifyService>().UpdateProductAvailable("222333", 10, shopifyData);
+            var updateList = _container.Resolve<IExcelParserService>().GetUpdatingList(@"C:\Schmidts Inventory Report.xlsx", _report);
+            _container.Resolve<IShopifyService>().UpdateProductAvailable("222333", 10, shopifyData, _report);
 
 
         }

@@ -61,7 +61,7 @@ namespace ShopifyImporter.Services
             }
             return shopifyRoot;
         }
-        public void UpdateProductAvailable(string sku, int newAvailableValue, ShopifyRoot root)
+        public void UpdateProductAvailable(string sku, int newAvailableValue, ShopifyRoot root, Report report)
         {
             long inventoryItemId = 0;
             try
@@ -71,7 +71,7 @@ namespace ShopifyImporter.Services
             catch (NullReferenceException)
             {
 
-                //registerMistake
+                report.SkuFailed.Add((sku, "SKU not found"));
             }
             var locationId = root.Inventory_levels.FirstOrDefault(x => x.Inventory_item_id == inventoryItemId).Location_id;
             var availableCurrentValue = root.Inventory_levels.FirstOrDefault(x => (x.Inventory_item_id == inventoryItemId && x.Location_id == locationId)).Available;
@@ -89,7 +89,14 @@ namespace ShopifyImporter.Services
             requestres.AddParameter("location_id", locationId);
             requestres.AddParameter("available_adjustment", availableAdjustment);
             IRestResponse response = client.Execute(requestres);
-
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                report.SuccessImportCounter++;
+            }
+            else
+            {
+                report.SkuFailed.Add((sku, response.ErrorMessage));
+            }
         }
     }
 }

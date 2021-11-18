@@ -1,5 +1,6 @@
 ﻿using ExcelDataReader;
 using ShopifyImporter.Contracts;
+using ShopifyImporter.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -12,7 +13,7 @@ namespace ShopifyImporter.Services
 {
     public class ExcelParserService : IExcelParserService
     {
-        public List<(string, int)> GetUpdatingList(string filePath)
+        public List<(string, int)> GetUpdatingList(string filePath, Report report)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var listScu = new List<(string, string)>();
@@ -52,7 +53,7 @@ namespace ShopifyImporter.Services
                 }
                 else
                 {
-                    //RegisterMistake
+                    report.SkuFailed.Add((skuTouple.Item1, "can't parse available count")); 
                 }
             }
 

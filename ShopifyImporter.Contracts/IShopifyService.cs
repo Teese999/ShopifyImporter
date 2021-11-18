@@ -10,6 +10,6 @@ namespace ShopifyImporter.Contracts
     public interface IShopifyService
     {
         ShopifyRoot GetData();
-        void UpdateProductAvailable(string sku, int newAvailableValue, ShopifyRoot root);
+        void UpdateProductAvailable(string sku, int newAvailableValue, ShopifyRoot root, Report report);
     }
 }
