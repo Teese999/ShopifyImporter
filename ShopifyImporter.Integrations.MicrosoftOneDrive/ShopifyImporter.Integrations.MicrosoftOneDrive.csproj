@@ -10,7 +10,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ShopifyImporter.Contracts\ShopifyImporter.Contracts.csproj" />
     <ProjectReference Include="..\ShopifyImporter.Integrations.MicrosoftGraph\ShopifyImporter.Integrations.MicrosoftGraph.csproj" />
   </ItemGroup>
 

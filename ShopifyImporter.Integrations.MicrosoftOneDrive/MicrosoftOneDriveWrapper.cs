@@ -1,7 +1,6 @@
 ﻿using Microsoft.Graph;
 using ShopifyImporter.Integrations.MicrosoftGraph;
 using ShopifyImporter.Integrations.MicrosoftOneDrive.Models;
-using ShopifyImporter.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.IO;

@@ -1,4 +1,4 @@
-﻿using ShopifyImporter.Models;
+﻿using ShopifyImporter.Integrations.Shopify.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,8 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
-using ShopifyImporter.Contracts;
-using ShopifyImporter.Models;
+using ShopifyImporter.Integrations.Shopify;
+using ShopifyImporter.Integrations.Shopify.Models;
 using ShopifyImporter.Services;
-using ShopifyImporter.Services.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -34,16 +33,16 @@ namespace ShopifyImporter.Console
 
             ContainerConfiguration.RegisterTypes<HierarchicalLifetimeManager>(_container);
 
-            //var shopifyData = _container.Resolve<IShopifyService>().GetData();
-            //var updateList = _container.Resolve<IExcelParserService>().GetUpdatingList(@"C:\Schmidts Inventory Report.xlsx", _report);
-            //_container.Resolve<IShopifyService>().UpdateProductAvailable("222333", 10, shopifyData, _report);
+            var shopifyData = _container.Resolve<ShopifyWrapper>().GetData();
+            var updateList = _container.Resolve<ExcelParserService>().GetUpdatingList(@"C:\Schmidts Inventory Report.xlsx", _report);
+            //_container.Resolve<ShopifyWrapper>().UpdateProductAvailable("222333", 10, shopifyData, _report);
 
-            System.Console.WriteLine("Hello World!");
-            var files = await _container.Resolve<IFileService>().GetFiles();
-            foreach (var file in files)
-            {
-                System.Console.WriteLine($"Id: {file.Item1}, Name: {file.Item2}");
-            }
+            //System.Console.WriteLine("Hello World!");
+            //var files = await _container.Resolve<FileService>().GetFiles();
+            //foreach (var file in files)
+            //{
+            //    System.Console.WriteLine($"Id: {file.Item1}, Name: {file.Item2}");
+            //}
         }
     }
 }

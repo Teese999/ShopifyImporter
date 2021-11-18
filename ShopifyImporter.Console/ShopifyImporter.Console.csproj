@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ShopifyImporter.Models\ShopifyImporter.Models.csproj" />
     <ProjectReference Include="..\ShopifyImporter.Services\ShopifyImporter.Services.csproj" />
   </ItemGroup>
 

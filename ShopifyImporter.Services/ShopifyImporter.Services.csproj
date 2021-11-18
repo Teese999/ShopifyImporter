@@ -14,10 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ShopifyImporder.Data.Models\ShopifyImpoter.Integrations.GoogleDrive.csproj" />
-    <ProjectReference Include="..\ShopifyImporter.Contracts\ShopifyImporter.Contracts.csproj" />
     <ProjectReference Include="..\ShopifyImporter.Integrations.MicrosoftOneDrive\ShopifyImporter.Integrations.MicrosoftOneDrive.csproj" />
-    <ProjectReference Include="..\ShopifyImporter.Models\ShopifyImporter.Models.csproj" />
   </ItemGroup>
 
 </Project>

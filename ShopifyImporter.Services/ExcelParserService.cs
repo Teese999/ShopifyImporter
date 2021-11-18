@@ -1,6 +1,5 @@
 ﻿using ExcelDataReader;
-using ShopifyImporter.Contracts;
-using ShopifyImporter.Models;
+using ShopifyImporter.Integrations.Shopify.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ShopifyImporter.Services
 {
-    public class ExcelParserService : IExcelParserService
+    public class ExcelParserService
     {
         public List<(string, int)> GetUpdatingList(string filePath, Report report)
         {
