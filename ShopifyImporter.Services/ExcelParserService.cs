@@ -1,4 +1,5 @@
 ﻿using ExcelDataReader;
+using ShopifyImporter.Contracts;
 using ShopifyImporter.Integrations.Shopify.Models;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,9 @@ using System.Threading.Tasks;
 
 namespace ShopifyImporter.Services
 {
-    public class ExcelParserService
+    public class ExcelParserService : IExcelParserService
     {
-        public List<(string, int)> GetUpdatingList(string filePath, Report report)
+        public List<(string, int)> GetUpdatingList(string filePath, ReportDto report)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             var listScu = new List<(string, string)>();

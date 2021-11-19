@@ -1,4 +1,5 @@
-﻿using ShopifyImporter.Integrations.MicrosoftGraph;
+﻿using ShopifyImporter.Contracts;
+using ShopifyImporter.Integrations.MicrosoftGraph;
 using ShopifyImporter.Integrations.MicrosoftOneDrive;
 using ShopifyImporter.Integrations.Shopify;
 using System;
@@ -19,9 +20,9 @@ namespace ShopifyImporter.Services
             container.RegisterType<MicrosoftOneDriveWrapper>(new TLifetime());
             container.RegisterType<MicrosoftGraphWrapper>(new TLifetime());
             container.RegisterType<ShopifyWrapper>(new TLifetime());
-            container.RegisterType<FileService>(new TLifetime());
-            container.RegisterType<ExcelParserService>(new TLifetime());
-            
+            container.RegisterType<IFileService, FileService>(new TLifetime());
+            container.RegisterType<IExcelParserService, ExcelParserService>(new TLifetime());
+            container.RegisterType<IShopifyService, ShopifyService>(new TLifetime());
         }
     }
 }

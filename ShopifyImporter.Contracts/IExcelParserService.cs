@@ -1,4 +1,4 @@
-﻿using ShopifyImporter.Integrations.Shopify.Models;
+﻿using ShopifyImporter.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +9,6 @@ namespace ShopifyImporter.Contracts
 {
     public interface IExcelParserService
     {
-        List<(string, int)> GetUpdatingList(string filePath, Report report);
+        List<(string, int)> GetUpdatingList(string filePath, ReportDto report);
     }
 }

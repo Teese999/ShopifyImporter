@@ -1,4 +1,5 @@
-﻿using ShopifyImporter.Integrations.MicrosoftOneDrive;
+﻿using ShopifyImporter.Contracts;
+using ShopifyImporter.Integrations.MicrosoftOneDrive;
 using ShopifyImporter.Integrations.Shopify.Models;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using Unity;
 
 namespace ShopifyImporter.Services
 {
-    public class FileService
+    public class FileService : IFileService
     {
         private IUnityContainer _container;
         private Settings _settings;

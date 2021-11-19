@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using ShopifyImporter.Contracts;
 using ShopifyImporter.Integrations.Shopify;
 using ShopifyImporter.Integrations.Shopify.Models;
 using ShopifyImporter.Services;
@@ -18,7 +19,7 @@ namespace ShopifyImporter.Console
     {
 
         private static IUnityContainer _container = new UnityContainer();
-        private static Report _report = new();
+        private static ReportDto _report = new();
 
         static async Task Main(string[] args)
         {

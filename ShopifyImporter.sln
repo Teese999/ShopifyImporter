@@ -4,6 +4,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{7EDFEBAA-19A8-4EFE-A6BE-F3E01BFAE14A}"
+	ProjectSection(SolutionItems) = preProject
+		ShopifyImporter.Integrations.Shopify\Models\Report.cs = ShopifyImporter.Integrations.Shopify\Models\Report.cs
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopifyImporter.Services", "ShopifyImporter.Services\ShopifyImporter.Services.csproj", "{2D039967-08A7-45A8-B9CC-E21FE78685CD}"
 EndProject
@@ -15,7 +18,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopifyImporter.Integration
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopifyImporter.Integrations.MicrosoftGraph", "ShopifyImporter.Integrations.MicrosoftGraph\ShopifyImporter.Integrations.MicrosoftGraph.csproj", "{29FCF03E-EE13-4E94-923F-CFAE5DE1B7C8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopifyImporter.Integrations.Shopify", "ShopifyImporter.Integrations.Shopify\ShopifyImporter.Integrations.Shopify.csproj", "{058C5ABB-B1F5-46A3-9FDC-F80F71BF095E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopifyImporter.Integrations.Shopify", "ShopifyImporter.Integrations.Shopify\ShopifyImporter.Integrations.Shopify.csproj", "{058C5ABB-B1F5-46A3-9FDC-F80F71BF095E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopifyImporter.Contracts", "ShopifyImporter.Contracts\ShopifyImporter.Contracts.csproj", "{5F4A4E44-F597-4E9E-B6B5-912812AAE106}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,6 +48,10 @@ Global
 		{058C5ABB-B1F5-46A3-9FDC-F80F71BF095E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{058C5ABB-B1F5-46A3-9FDC-F80F71BF095E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{058C5ABB-B1F5-46A3-9FDC-F80F71BF095E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F4A4E44-F597-4E9E-B6B5-912812AAE106}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F4A4E44-F597-4E9E-B6B5-912812AAE106}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F4A4E44-F597-4E9E-B6B5-912812AAE106}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F4A4E44-F597-4E9E-B6B5-912812AAE106}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,6 +61,7 @@ Global
 		{287C516B-E7C4-4EAC-ACEA-B7A50EEAB537} = {1308BBAE-A95B-46B6-8DB5-958136227DD3}
 		{29FCF03E-EE13-4E94-923F-CFAE5DE1B7C8} = {1308BBAE-A95B-46B6-8DB5-958136227DD3}
 		{058C5ABB-B1F5-46A3-9FDC-F80F71BF095E} = {1308BBAE-A95B-46B6-8DB5-958136227DD3}
+		{5F4A4E44-F597-4E9E-B6B5-912812AAE106} = {7EDFEBAA-19A8-4EFE-A6BE-F3E01BFAE14A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D3A3BDCF-CE7B-4C90-A0C5-272E78C1B35A}

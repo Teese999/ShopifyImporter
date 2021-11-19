@@ -9,5 +9,9 @@
     <PackageReference Include="RestSharp" Version="106.13.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\ShopifyImporter.Contracts\ShopifyImporter.Contracts.csproj" />
+  </ItemGroup>
+
 
 </Project>

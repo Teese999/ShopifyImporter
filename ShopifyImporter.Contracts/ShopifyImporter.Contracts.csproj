@@ -9,8 +9,5 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="6.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ShopifyImporter.Integrations.Shopify\ShopifyImporter.Integrations.Shopify.csproj" />
-  </ItemGroup>
 
 </Project>

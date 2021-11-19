@@ -1,6 +1,7 @@
 ﻿using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensions.Msal;
+using ShopifyImporter.Contracts;
 using ShopifyImporter.Integrations.Shopify.Models;
 using System;
 using System.Diagnostics;

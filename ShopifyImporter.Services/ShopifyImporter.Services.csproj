@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ShopifyImporter.Contracts\ShopifyImporter.Contracts.csproj" />
     <ProjectReference Include="..\ShopifyImporter.Integrations.MicrosoftOneDrive\ShopifyImporter.Integrations.MicrosoftOneDrive.csproj" />
   </ItemGroup>
 

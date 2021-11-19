@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShopifyImporter.Integrations.Shopify.Models
+namespace ShopifyImporter.Contracts
 {
     public class Settings
     {
@@ -14,7 +14,7 @@ namespace ShopifyImporter.Integrations.Shopify.Models
         public class ShopifySettings
         {
             public string ShopUrl { get; set; }
-            public string ShopAccessToken { get; set; }
+            public string Password { get; set; }
             public string ShopApiKey { get; set; }
         }
 

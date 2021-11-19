@@ -1,7 +1,9 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
 using RestSharp.Authenticators;
+using ShopifyImporter.Contracts;
 using ShopifyImporter.Integrations.Shopify.Models;
+using ShopifyImporter.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +20,7 @@ namespace ShopifyImporter.Integrations.Shopify
         public ShopifyWrapper(Settings settings)
         {
             _shopUrl = settings.Shopify.ShopUrl;
-            _shopAccessToken = settings.Shopify.ShopAccessToken;
+            _shopAccessToken = settings.Shopify.Password;
             _shopApiKey = settings.Shopify.ShopApiKey;
         }
 
@@ -91,7 +93,7 @@ namespace ShopifyImporter.Integrations.Shopify
             }
             return shopifyRoot;
         }
-        public void UpdateProductAvailable(string sku, int newAvailableValue, ShopifyRoot root, Report report)
+        public void UpdateProductAvailable(string sku, int newAvailableValue, ShopifyRoot root, ReportDto report)
         {
             long inventoryItemId = 0;
 
