@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ShopifyImporter.Integrations.Shopify
@@ -17,6 +18,7 @@ namespace ShopifyImporter.Integrations.Shopify
         private string _shopUrl { get; set; }
         private string _shopAccessToken { get; set; }
         private string _shopApiKey { get; set; }
+        private const int _productsPerRequest = 250;
         public ShopifyWrapper(Settings settings)
         {
             _shopUrl = settings.Shopify.ShopUrl;
@@ -37,7 +39,7 @@ namespace ShopifyImporter.Integrations.Shopify
             RestRequest request = new();
             request.AddUrlSegment("status", "open");
             request.AddHeader("header", "Content-Type: application/json");
-            request.AddParameter("limit", 250);
+            request.AddParameter("limit", _productsPerRequest);
             IRestResponse response;
 
             //get variants
@@ -45,28 +47,13 @@ namespace ShopifyImporter.Integrations.Shopify
             request.Resource = resource;
             request.Method = Method.GET;
             response = client.Execute(request);
-            shopifyRoot.Products = JsonConvert.DeserializeObject<ShopifyRoot>(response.Content).Products;
-
-            string link = PanigationEndChecker(response);
-            IRestResponse loopResponse = null;
-            while (link != null)
+            var products = JsonConvert.DeserializeObject<ShopifyRoot>(response.Content).Products;
+            shopifyRoot.Products = products;
+            if (shopifyRoot.Products.Count == _productsPerRequest)
             {
-                
-                var loopClient = new RestClient(link);
-                loopClient.Authenticator = new HttpBasicAuthenticator(_shopApiKey, _shopAccessToken);
-                RestRequest loopRequest = new();
-                loopRequest.AddUrlSegment("status", "open");
-                loopRequest.AddHeader("header", "Content-Type: application/json");
-                loopRequest.AddParameter("limit", 250);
-                loopRequest.Method = Method.GET;
-                loopResponse = loopClient.Execute(loopRequest);
-                shopifyRoot.Products.AddRange(JsonConvert.DeserializeObject<ShopifyRoot>(loopResponse.Content).Products);
-                shopifyRoot.Products = shopifyRoot.Products.OrderBy(x => x.Id).ToList();
-                link = PanigationEndChecker(loopResponse);
+                PanigationEndChecker(shopifyRoot.Products);
             }
-            //shopifyRoot.Products.AddRange(JsonConvert.DeserializeObject<ShopifyRoot>(loopResponse.Content).Products);
-            shopifyRoot.Products = shopifyRoot.Products.OrderBy(x => x.Id).ToList();
-
+          
             foreach (Product p in shopifyRoot.Products)
             {
                 foreach (Variant v in p.Variants)
@@ -74,7 +61,6 @@ namespace ShopifyImporter.Integrations.Shopify
                     shopifyRoot.Variants.Add(v);
                 }
             }
-
 
             //get locations
             resource = "/admin/api/2021-10/locations.json";
@@ -136,20 +122,30 @@ namespace ShopifyImporter.Integrations.Shopify
                 report.SkuFailed.Add((sku, response.ErrorMessage));
             }
         }
-        private string PanigationEndChecker(IRestResponse response)
+        private void PanigationEndChecker(List<Product> products)
         {
+            ShopifyRoot shopifyRoot = new();
 
-            string[] link = response.Headers.ToList().Find(x => x.Name == "Link").Value.ToString().Split(";");
-            link[0] = link[0].Remove(0, 1);
-            link[0] = link[0].Remove(link[0].Length - 1, 1);
-            //link[1] = link[1].Remove(0, 1);
+            var client = new RestClient(_shopUrl);
+            client.Authenticator = new HttpBasicAuthenticator(_shopApiKey, _shopAccessToken);
 
-            if (!response.Headers.ToList().Find(x => x.Name == "Link").ToString().Contains("previous"))
+            string resource = null;
+            RestRequest request = new();
+            request.AddUrlSegment("status", "open");
+            request.AddHeader("header", "Content-Type: application/json");
+            request.AddParameter("limit", _productsPerRequest);
+            request.AddParameter("since_id", products.Last().Id);
+            IRestResponse response;
+            resource = "/admin/api/2021-07/products.json";
+            request.Resource = resource;
+            request.Method = Method.GET;
+            response = client.Execute(request);
+            var gettedProducts = JsonConvert.DeserializeObject<ShopifyRoot>(response.Content).Products;
+            products.AddRange(gettedProducts);
+            if (gettedProducts.Count == _productsPerRequest)
             {
-                return link[0];
-            }
-
-            return null;
+                PanigationEndChecker(products);
+            }            
         }
     }
 }
