@@ -2,9 +2,7 @@
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensions.Msal;
 using ShopifyImporter.Contracts;
-using ShopifyImporter.Integrations.Shopify.Models;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -24,7 +22,10 @@ namespace ShopifyImporter.Integrations.MicrosoftGraph
             _clientId = settings.Azure.MicrosoftGraph.AppClientId;
             _scopes = settings.Azure.MicrosoftGraph.Scopes;
             _msalCacheFilename = settings.Azure.MicrosoftGraph.MsalCacheFileName;
-            _identityClientApp = PublicClientApplicationBuilder.Create(_clientId).WithRedirectUri(settings.Azure.MicrosoftGraph.AppRedirectUrl).Build();
+            _identityClientApp = PublicClientApplicationBuilder
+                .Create(_clientId)
+                .WithRedirectUri(settings.Azure.MicrosoftGraph.AppRedirectUrl)
+                .Build();
         }
 
         public async Task<GraphServiceClient> GetAuthenticatedClient()

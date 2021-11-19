@@ -1,10 +1,8 @@
 ﻿using ShopifyImporter.Contracts;
 using ShopifyImporter.Integrations.MicrosoftOneDrive;
-using ShopifyImporter.Integrations.Shopify.Models;
-using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Unity;
 
@@ -21,11 +19,24 @@ namespace ShopifyImporter.Services
             _settings = settings;
         }
 
-        public async Task<IEnumerable<(string, string)>> GetFiles()
+        public async Task<IEnumerable<string>> DownloadFiles()
         {
             var wrapper = _container.Resolve<MicrosoftOneDriveWrapper>();
-            var files = await wrapper.GetFiles(_settings.Azure.MicrosoftOneDrive.IncomingFolderName);
-            return files.Select(f => (f.Id, f.Name));
+            var fileNames = await wrapper.DownloadFiles();
+            return fileNames;
+        }
+
+        public async Task UploadFile(string fileName)
+        {
+            var wrapper = _container.Resolve<MicrosoftOneDriveWrapper>();
+            await wrapper.UploadFile(fileName);
+        }
+
+        public async Task DeleteFile(string fileName)
+        {
+            var wrapper = _container.Resolve<MicrosoftOneDriveWrapper>();
+            File.Delete(Path.Combine(_settings.IncomingDownloadFolderName, fileName));
+            await wrapper.DeleteFile(fileName);
         }
     }
 }

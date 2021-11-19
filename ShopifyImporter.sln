@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.31321.278
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{7EDFEBAA-19A8-4EFE-A6BE-F3E01BFAE14A}"
-	ProjectSection(SolutionItems) = preProject
-		ShopifyImporter.Integrations.Shopify\Models\Report.cs = ShopifyImporter.Integrations.Shopify\Models\Report.cs
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopifyImporter.Services", "ShopifyImporter.Services\ShopifyImporter.Services.csproj", "{2D039967-08A7-45A8-B9CC-E21FE78685CD}"
 EndProject

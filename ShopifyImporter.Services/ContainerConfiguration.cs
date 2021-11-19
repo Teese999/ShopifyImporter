@@ -20,9 +20,13 @@ namespace ShopifyImporter.Services
             container.RegisterType<MicrosoftOneDriveWrapper>(new TLifetime());
             container.RegisterType<MicrosoftGraphWrapper>(new TLifetime());
             container.RegisterType<ShopifyWrapper>(new TLifetime());
+
             container.RegisterType<IFileService, FileService>(new TLifetime());
             container.RegisterType<IExcelParserService, ExcelParserService>(new TLifetime());
             container.RegisterType<IShopifyService, ShopifyService>(new TLifetime());
+            container.RegisterType<ICommonService, CommonService>(new TLifetime());
+            container.RegisterType<IEmailService, EmailService>(new TLifetime());
+            container.RegisterType<IReportService, ReportService>(new TLifetime());
         }
     }
 }

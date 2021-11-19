@@ -10,6 +10,8 @@ namespace ShopifyImporter.Contracts
     {
         public ShopifySettings Shopify { get; set; }
         public AzureSettings Azure { get; set; }
+        public SmtpSettings Smtp { get; set; }
+        public string IncomingDownloadFolderName { get; set; }
 
         public class ShopifySettings
         {
@@ -36,6 +38,16 @@ namespace ShopifyImporter.Contracts
         {
             public string IncomingFolderName { get; set; }
             public string ProcessedFolderName { get; set; }
+        }
+        public class SmtpSettings
+        {
+            public string SmtpHost { get; set; }
+            public string SmtpUserName { get; set; }
+            public string SmtpPassword { get; set; }
+            public int SmtpPort { get; set; }
+
+            public string EmailFrom { get; set; }
+            public string EmailTo { get; set; }
         }
     }
 }

@@ -1,25 +1,29 @@
 ﻿using ExcelDataReader;
 using ShopifyImporter.Contracts;
-using ShopifyImporter.Integrations.Shopify.Models;
-using System;
+using ShopifyImporter.Contracts.Models;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ShopifyImporter.Services
 {
     public class ExcelParserService : IExcelParserService
     {
-        public List<(string, int)> GetUpdatingList(string filePath, ReportDto report)
+        private Settings _settings;
+
+        public ExcelParserService(Settings settings)
         {
+            _settings = settings;
+        }
+
+        public IEnumerable<InventoryDto> ParseFile(string fileName)
+        {
+            var result = new List<InventoryDto>();
+
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            var listScu = new List<(string, string)>();
 
-
-            using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+            using (var stream = File.Open(Path.Combine(_settings.IncomingDownloadFolderName, fileName), FileMode.Open, FileAccess.Read))
             {
                 var excelReader = ExcelReaderFactory.CreateOpenXmlReader(stream);
 
@@ -34,30 +38,38 @@ namespace ShopifyImporter.Services
                     {
                         for (int i = 1; i < table.Rows.Count; i++)
                         {
-                            listScu.Add((table.Rows[i][0].ToString(), table.Rows[i][2].ToString()));
+                            var inventory = new InventoryDto();
+
+                            var sku = table.Rows[i][0]?.ToString()?.Trim();
+                            var quantityString = table.Rows[i][2]?.ToString();
+
+                            if (!string.IsNullOrEmpty(sku))
+                            {
+                                inventory.Sku = sku;
+                            }
+                            else
+                            {
+                                inventory.HasError = true;
+                                inventory.ErrorMessage = "\"SKU\" column is empty.";
+                            }
+
+                            if (int.TryParse(quantityString, out int quantity))
+                            {
+                                inventory.Quantity = quantity;
+                            }
+                            else
+                            {
+                                inventory.HasError = true;
+                                inventory.ErrorMessage = "\"Available\" column can't be converted to number.";
+                            }
+
+                            result.Add(inventory);
                         }
                     }
                 }
             }
 
-            var skuPardesList = new List<(string, int)>();
-
-            foreach (var skuTouple in listScu)
-            {
-                int parsedItemAvailable;
-                bool parseReuslt = Int32.TryParse(skuTouple.Item2, out parsedItemAvailable);
-
-                if (parseReuslt)
-                {
-                    skuPardesList.Add((skuTouple.Item1.Replace(" ", ""), parsedItemAvailable));
-                }
-                else
-                {
-                    report.SkuFailed.Add((skuTouple.Item1, "can't parse available count")); 
-                }
-            }
-
-            return skuPardesList;
+            return result;
         }
     }
 }

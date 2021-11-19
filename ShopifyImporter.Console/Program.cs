@@ -1,14 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using ShopifyImporter.Contracts;
-using ShopifyImporter.Integrations.Shopify;
-using ShopifyImporter.Integrations.Shopify.Models;
 using ShopifyImporter.Services;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Unity;
 using Unity.Lifetime;
@@ -19,7 +12,6 @@ namespace ShopifyImporter.Console
     {
 
         private static IUnityContainer _container = new UnityContainer();
-        private static ReportDto _report = new();
 
         static async Task Main(string[] args)
         {
@@ -29,21 +21,26 @@ namespace ShopifyImporter.Console
                 .AddEnvironmentVariables()
                 .Build();
 
-            var settings = builder.GetSection("Settings");
-            _container.RegisterInstance(settings.Get<Settings>());
+            var settings = builder.GetSection("Settings").Get<Settings>();
+            _container.RegisterInstance(settings);
 
             ContainerConfiguration.RegisterTypes<HierarchicalLifetimeManager>(_container);
 
-            var shopifyData = _container.Resolve<ShopifyWrapper>().GetData();
-            var updateList = _container.Resolve<ExcelParserService>().GetUpdatingList(@"C:\Schmidts Inventory Report.xlsx", _report);
-            //_container.Resolve<ShopifyWrapper>().UpdateProductAvailable("222333", 10, shopifyData, _report);
+            if (!Directory.Exists(settings.IncomingDownloadFolderName))
+            {
+                Directory.CreateDirectory(settings.IncomingDownloadFolderName);
+            }
 
-            //System.Console.WriteLine("Hello World!");
-            //var files = await _container.Resolve<FileService>().GetFiles();
-            //foreach (var file in files)
-            //{
-            //    System.Console.WriteLine($"Id: {file.Item1}, Name: {file.Item2}");
-            //}
+            var commonService = _container.Resolve<ICommonService>();
+            
+            if (args.Length > 0 && args[0] == "-r")
+            {
+                await commonService.Execute();
+            }
+            else
+            {
+                await commonService.Authenticate();
+            }
         }
     }
 }
