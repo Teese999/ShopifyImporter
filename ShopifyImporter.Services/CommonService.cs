@@ -40,7 +40,7 @@ namespace ShopifyImporter.Services
             catch (Exception e)
             {
                 report = e.Message;
-                _emailService.Send(_settings.Smtp.EmailFrom, _settings.Smtp.EmailTo, $"Shopify sync report {DateTime.UtcNow}", report); //
+                _emailService.Send(_settings.Smtp.EmailFrom, _settings.Smtp.EmailTo, $"Shopify sync report {DateTime.UtcNow}", report);
             }
             
 
@@ -49,8 +49,6 @@ namespace ShopifyImporter.Services
                 try
                 {
                     var inventories = _excelParserService.ParseFile(fileName);
-                    //todo: remove this
-                    inventories = inventories.Take(10);
                     inventories = await _shopifyService.UpdateInventoriesAsync(inventories);
                     await _fileService.UploadFile(fileName);
                     await _fileService.DeleteFile(fileName);
@@ -60,8 +58,8 @@ namespace ShopifyImporter.Services
                 {
                     report = e.Message;
                 }
-                
-                _emailService.Send(_settings.Smtp.EmailFrom, _settings.Smtp.EmailTo, $"Shopify sync report {DateTime.UtcNow}", report); //
+
+                _emailService.Send(_settings.Smtp.EmailFrom, _settings.Smtp.EmailTo, $"Shopify sync report {DateTime.UtcNow}", report);
             }
         }
 
