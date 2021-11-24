@@ -11,17 +11,20 @@ namespace ShopifyImporter.Services.Tests
     public class ExcelParserServiceTests
     {
 
+        public ExcelParserServiceTests()
+        {
+        }
+
         [TestMethod]
         public void ParseFile_returned_succes()
         {
 
             string filename = @"Schmidts Inventory Report.xlsx";
             int expected = 1808;
-            var excelSrvices = new ExcelParserService(Program.GetSettings()).ParseFile(filename);
+            var inventories = new ExcelParserService(Program.GetSettings()).ParseFile(filename);
 
-            //var actual = excelSrvices.ParseFile(filename);
 
-            Assert.AreEqual(expected, excelSrvices.Count());
+            Assert.AreEqual(expected, inventories.Count());
 
         }
 

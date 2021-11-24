@@ -30,7 +30,7 @@ namespace ShopifyImporter.Services
 
             //Tests
             //container.RegisterType<ExcelParserServiceTests>(new TLifetime());
-           
+
         }
     }
 }
