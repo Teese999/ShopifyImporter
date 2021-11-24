@@ -21,7 +21,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopifyImporter.Contracts",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DBD13350-7351-4883-82AA-ADEBAC1BDFB1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopifyImporter.Services.Tests", "ShopifyImporter.Services.Tests\ShopifyImporter.Services.Tests.csproj", "{DDF47E07-341F-4086-BF4D-DAF1F00E1D27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopifyImporter.Services.Tests", "ShopifyImporter.Services.Tests\ShopifyImporter.Services.Tests.csproj", "{DDF47E07-341F-4086-BF4D-DAF1F00E1D27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

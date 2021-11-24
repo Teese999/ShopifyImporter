@@ -4,29 +4,29 @@ using Unity;
 using ShopifyImporter.Contracts;
 using System.Linq;
 using ShopifyImporter.Console;
+using Unity.Lifetime;
+using System.IO;
 
 namespace ShopifyImporter.Services.Tests
 {
     [TestClass]
-    public class ExcelParserServiceTests
+    public class ExcelParserServiceTests : AbstractTest
     {
-
-        public ExcelParserServiceTests()
-        {
-        }
 
         [TestMethod]
         public void ParseFile_returned_succes()
-        {
-
+        {                   
             string filename = @"Schmidts Inventory Report.xlsx";
             int expected = 1808;
-            var inventories = new ExcelParserService(Program.GetSettings()).ParseFile(filename);
-
-
+            var inventories = _container.Resolve<IExcelParserService>().ParseFile(filename);
             Assert.AreEqual(expected, inventories.Count());
-
         }
+        [TestMethod]
+        public void ParseFile_returned_fileNotFoundException()
+        {
+            string filename = @"Schmidts Inventory Report1.xlsx";
 
+            Assert.ThrowsException<FileNotFoundException>(() => { _container.Resolve<IExcelParserService>().ParseFile(filename); });
+        }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Graph;
 using ShopifyImporter.Contracts;
 using ShopifyImporter.Integrations.MicrosoftGraph;
+using ShopifyImporter.Integrations.MicrosoftGraph.Contracts;
+using ShopifyImporter.Integrations.MicrosoftOneDrive.Contracts;
 using ShopifyImporter.Integrations.MicrosoftOneDrive.Models;
 using System;
 using System.Collections.Generic;
@@ -14,7 +16,7 @@ using Unity;
 
 namespace ShopifyImporter.Integrations.MicrosoftOneDrive
 {
-    public class MicrosoftOneDriveWrapper
+    public class MicrosoftOneDriveWrapper : IMicrosoftOneDriveWrapper
     {
         private IUnityContainer _container;
         private Settings _settings;
@@ -29,7 +31,7 @@ namespace ShopifyImporter.Integrations.MicrosoftOneDrive
         {
             try
             {
-                var wrapper = _container.Resolve<MicrosoftGraphWrapper>();
+                var wrapper = _container.Resolve<IMicrosoftGraphWrapper>();
                 var graphClient = await wrapper.GetAuthenticatedClient();
 
                 var fileNames = new List<string>();
@@ -70,7 +72,7 @@ namespace ShopifyImporter.Integrations.MicrosoftOneDrive
         {
             try
             {
-                var wrapper = _container.Resolve<MicrosoftGraphWrapper>();
+                var wrapper = _container.Resolve<IMicrosoftGraphWrapper>();
                 var graphClient = await wrapper.GetAuthenticatedClient();
                 using (FileStream fileStream = new FileStream(Path.Combine(_settings.IncomingDownloadFolderName, fileName), FileMode.Open, FileAccess.Read))
                 {
@@ -94,7 +96,7 @@ namespace ShopifyImporter.Integrations.MicrosoftOneDrive
         {
             try
             {
-                var wrapper = _container.Resolve<MicrosoftGraphWrapper>();
+                var wrapper = _container.Resolve<IMicrosoftGraphWrapper>();
                 var graphClient = await wrapper.GetAuthenticatedClient();
                 await graphClient.Drive.Root.ItemWithPath($"/{_settings.Azure.MicrosoftOneDrive.IncomingFolderName}/{fileName}").Request().DeleteAsync();
             }

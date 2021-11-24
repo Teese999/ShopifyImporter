@@ -2,6 +2,7 @@
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensions.Msal;
 using ShopifyImporter.Contracts;
+using ShopifyImporter.Integrations.MicrosoftGraph.Contracts;
 using System;
 using System.Linq;
 using System.Net.Http.Headers;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ShopifyImporter.Integrations.MicrosoftGraph
 {
-    public class MicrosoftGraphWrapper
+    public class MicrosoftGraphWrapper : IMicrosoftGraphWrapper
     {
         private string _clientId;
         private string[] _scopes;

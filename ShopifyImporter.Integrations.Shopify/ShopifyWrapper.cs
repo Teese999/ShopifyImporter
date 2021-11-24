@@ -1,5 +1,6 @@
 ﻿using ShopifyImporter.Contracts;
 using ShopifyImporter.Contracts.Models;
+using ShopifyImporter.Integrations.Shopify.Contracts;
 using ShopifySharp;
 using ShopifySharp.Filters;
 using System;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ShopifyImporter.Integrations.Shopify
 {
-    public class ShopifyWrapper
+    public class ShopifyWrapper : IShopifyWrapper
     {
         private string _shopUrl { get; set; }
         private string _shopPassword { get; set; }
