@@ -27,6 +27,75 @@ namespace ShopifyImporter.Integrations.MicrosoftOneDrive
             _settings = settings;
         }
 
+        public async Task<IEnumerable<string>> ListRootFolders()
+        {
+            try
+            {
+                var wrapper = _container.Resolve<MicrosoftGraphWrapper>();
+                var graphClient = await wrapper.GetAuthenticatedClient();
+
+                var folderNames = new List<string>();
+
+                var item = await graphClient.Drive.Root.Request().Expand(i => i.Children).GetAsync();
+
+                foreach (var child in item.Children)
+                {
+                    if (child.Folder != null)
+                    {
+                        folderNames.Add(child.Name);
+                    }
+                }
+
+                return folderNames;
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Microsoft OneDrive error: \"Root\" - {((ServiceException)e).Error.Message}");
+            }
+        }
+
+        public async Task CheckFolderExists(string folderName)
+        {
+            try
+            {
+                var wrapper = _container.Resolve<MicrosoftGraphWrapper>();
+                var graphClient = await wrapper.GetAuthenticatedClient();
+
+                var item = await GetFolder(folderName, graphClient);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Microsoft OneDrive error: {folderName} - {((ServiceException)e).Error.Message}");
+            }
+        }
+
+        public async Task CreateFolder(string folderName)
+        {
+            try
+            {
+                var wrapper = _container.Resolve<MicrosoftGraphWrapper>();
+                var graphClient = await wrapper.GetAuthenticatedClient();
+
+                var driveItem = new DriveItem
+                {
+                    Name = folderName,
+                    Folder = new Folder
+                    {
+                    },
+                    AdditionalData = new Dictionary<string, object>()
+                    {
+                        {"@microsoft.graph.conflictBehavior","fail"}
+                    }
+                };
+
+                await graphClient.Drive.Root.Children.Request().AddAsync(driveItem);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Microsoft OneDrive error: {folderName} - {((ServiceException)e).Error.Message}");
+            }
+        }
+
         public async Task<IEnumerable<string>> DownloadFiles()
         {
             try
@@ -36,7 +105,7 @@ namespace ShopifyImporter.Integrations.MicrosoftOneDrive
 
                 var fileNames = new List<string>();
 
-                var item = await graphClient.Drive.Root.ItemWithPath($"/{_settings.Azure.MicrosoftOneDrive.IncomingFolderName}").Request().Expand(i => i.Children).GetAsync();
+                var item = await GetFolder(_settings.Azure.MicrosoftOneDrive.IncomingFolderName, graphClient);
 
                 foreach (var child in item.Children)
                 {
@@ -57,14 +126,7 @@ namespace ShopifyImporter.Integrations.MicrosoftOneDrive
             }
             catch (Exception e)
             {
-                if (e is ServiceException)
-                {
-                    throw new Exception($"Microsoft OneDrive error: {_settings.Azure.MicrosoftOneDrive.IncomingFolderName} - {((ServiceException)e).Error.Message}");
-                }
-                else
-                {
-                    throw;
-                }
+                throw new Exception($"Microsoft OneDrive error: {_settings.Azure.MicrosoftOneDrive.IncomingFolderName} - {((ServiceException)e).Error.Message}");
             }
         }
 
@@ -81,14 +143,7 @@ namespace ShopifyImporter.Integrations.MicrosoftOneDrive
             }
             catch (Exception e)
             {
-                if (e is ServiceException)
-                {
-                    throw new Exception($"Microsoft OneDrive error: {_settings.Azure.MicrosoftOneDrive.ProcessedFolderName}/{fileName} - {((ServiceException)e).Error.Message}");
-                }
-                else
-                {
-                    throw;
-                }
+                throw new Exception($"Microsoft OneDrive error: {_settings.Azure.MicrosoftOneDrive.ProcessedFolderName}/{fileName} - {((ServiceException)e).Error.Message}");
             }
         }
 
@@ -102,15 +157,14 @@ namespace ShopifyImporter.Integrations.MicrosoftOneDrive
             }
             catch (Exception e)
             {
-                if (e is ServiceException)
-                {
-                    throw new Exception($"Microsoft OneDrive error: {_settings.Azure.MicrosoftOneDrive.IncomingFolderName}/{fileName} - {((ServiceException)e).Error.Message}");
-                }
-                else
-                {
-                    throw;
-                }
+                throw new Exception($"Microsoft OneDrive error: {_settings.Azure.MicrosoftOneDrive.IncomingFolderName}/{fileName} - {((ServiceException)e).Error.Message}");
             }
+        }
+
+        private async Task<DriveItem> GetFolder(string folderName, GraphServiceClient graphClient)
+        {
+            var item = await graphClient.Drive.Root.ItemWithPath($"/{folderName}").Request().Expand(i => i.Children).GetAsync();
+            return item;
         }
     }
 }

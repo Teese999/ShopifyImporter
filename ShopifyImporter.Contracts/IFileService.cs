@@ -9,6 +9,9 @@ namespace ShopifyImporter.Contracts
 {
     public interface IFileService
     {
+        Task<IEnumerable<string>> ListRootFolders();
+        Task CheckFolderExists(string folderName);
+        Task CreateFolder(string folderName);
         Task<IEnumerable<string>> DownloadFiles();
         Task UploadFile(string fileName);
         Task DeleteFile(string fileName);

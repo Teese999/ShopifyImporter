@@ -17,7 +17,7 @@ namespace ShopifyImporter.Services
         private IReportService _reportService;
         private IShopifyService _shopifyService;
 
-        public CommonService(IFileService fileService, IExcelParserService excelParserService, IEmailService emailService, 
+        public CommonService(IFileService fileService, IExcelParserService excelParserService, IEmailService emailService,
             IReportService reportService, IShopifyService shopifyService, Settings settings)
         {
             _settings = settings;
@@ -42,7 +42,7 @@ namespace ShopifyImporter.Services
                 report = e.Message;
                 _emailService.Send(_settings.Smtp.EmailFrom, _settings.Smtp.EmailTo, $"Shopify sync report {DateTime.UtcNow}", report);
             }
-            
+
 
             foreach (var fileName in fileNames)
             {
@@ -63,9 +63,71 @@ namespace ShopifyImporter.Services
             }
         }
 
-        public async Task Authenticate()
+        public async Task<(IEnumerable<string>, IEnumerable<string>, IEnumerable<string>)> CheckFileStorageConfiguration()
         {
-            await _fileService.DownloadFiles();
+
+            var folders = new List<string>();
+            var createdFolders = new List<string>();
+            var errorMessages = new List<string>();
+
+            try
+            {
+                //check if folder exists
+                await _fileService.CheckFolderExists(_settings.Azure.MicrosoftOneDrive.IncomingFolderName);
+            }
+            catch (Exception e)
+            {
+                errorMessages.Add(e.Message);
+
+                if (_settings.Azure.MicrosoftGraph.AutomaticFolderCreationEnabled)
+                {
+                    try
+                    {
+                        //create folder if not exists
+                        await _fileService.CreateFolder(_settings.Azure.MicrosoftOneDrive.IncomingFolderName);
+                        createdFolders.Add(_settings.Azure.MicrosoftOneDrive.IncomingFolderName);
+                    }
+                    catch (Exception ex)
+                    {
+                        errorMessages.Add(ex.Message);
+                    }
+                }
+            }
+
+            try
+            {
+                //check if folder exists
+                await _fileService.CheckFolderExists(_settings.Azure.MicrosoftOneDrive.ProcessedFolderName);
+            }
+            catch (Exception e)
+            {
+                errorMessages.Add(e.Message);
+
+                if (_settings.Azure.MicrosoftGraph.AutomaticFolderCreationEnabled)
+                {
+                    try
+                    {
+                        //create folder if not exists
+                        await _fileService.CreateFolder(_settings.Azure.MicrosoftOneDrive.ProcessedFolderName);
+                        createdFolders.Add(_settings.Azure.MicrosoftOneDrive.ProcessedFolderName);
+                    }
+                    catch (Exception ex)
+                    {
+                        errorMessages.Add(ex.Message);
+                    }
+                }
+            }
+
+            try
+            {
+                folders = (await _fileService.ListRootFolders())?.ToList();
+            }
+            catch (Exception e)
+            {
+                errorMessages.Add(e.Message);
+            }
+
+            return (folders, createdFolders, errorMessages);
         }
     }
 }
