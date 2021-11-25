@@ -1,4 +1,4 @@
-﻿using Microsoft.Graph;
+﻿    using Microsoft.Graph;
 using ShopifyImporter.Contracts;
 using ShopifyImporter.Integrations.MicrosoftGraph;
 using ShopifyImporter.Integrations.MicrosoftGraph.Contracts;

@@ -34,18 +34,19 @@ namespace ShopifyImporter.Services.Tests
         }
 
         [TestMethod()]
-        public void AuthenticateTest()
+        public void CheckFileStorageConfigurationTest()
         {
+            (IEnumerable<string>, IEnumerable<string>, IEnumerable<string>) filesResult = new();
             try
             {
-                _commonService.Authenticate();
+                filesResult = _commonService.CheckFileStorageConfiguration().Result;
+                Assert.IsTrue(filesResult.Item1.Any());
             }
             catch (Exception e)
             {
-
-                Assert.Fail(e.ToString());
+                Assert.Fail(e.Message);
             }
-        }
 
+        }
     }
 }

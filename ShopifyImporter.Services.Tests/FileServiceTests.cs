@@ -48,5 +48,52 @@ namespace ShopifyImporter.Services.Tests
             var deleteTask = _fileService.DeleteFile("Schmidts Inventory Report22.xlsx");
             Assert.IsNull(deleteTask.Exception);
         }
+
+        [TestMethod()]
+        public void ListRootFoldersTest()
+        {
+            List<string> folders = new();
+            try
+            {
+                folders = _fileService.ListRootFolders().Result.ToList();
+            }
+            catch (Exception e)
+            {
+
+                Assert.Fail(e.Message);
+            }
+
+            Assert.IsTrue(folders != null);
+        }
+
+        [TestMethod()]
+        public void CheckFolderExistsTest()
+        {
+            try
+            {
+                var folders = _fileService.CheckFolderExists(_settings.Azure.MicrosoftOneDrive.IncomingFolderName);
+            }
+            catch (Exception e)
+            {
+
+                Assert.Fail(e.Message);
+            }
+            
+        }
+
+        [TestMethod()]
+        public void CreateFolderTest()
+        {
+            _fileService.CreateFolder("testFolder");
+            try
+            {
+                _fileService.CreateFolder("testFolder");
+            }
+            catch (Exception e)
+            {
+
+                Assert.Fail(e.Message);
+            }
+        }
     }
 }
