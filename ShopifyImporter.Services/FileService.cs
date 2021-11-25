@@ -19,6 +19,25 @@ namespace ShopifyImporter.Services
             _settings = settings;
         }
 
+        public async Task<IEnumerable<string>> ListRootFolders()
+        {
+            var wrapper = _container.Resolve<MicrosoftOneDriveWrapper>();
+            var folders = await wrapper.ListRootFolders();
+            return folders;
+        }
+
+        public async Task CheckFolderExists(string folderName)
+        {
+            var wrapper = _container.Resolve<MicrosoftOneDriveWrapper>();
+            await wrapper.CheckFolderExists(folderName);
+        }
+
+        public async Task CreateFolder(string folderName)
+        {
+            var wrapper = _container.Resolve<MicrosoftOneDriveWrapper>();
+            await wrapper.CreateFolder(folderName);
+        }
+
         public async Task<IEnumerable<string>> DownloadFiles()
         {
             var wrapper = _container.Resolve<MicrosoftOneDriveWrapper>();

@@ -32,6 +32,7 @@ namespace ShopifyImporter.Contracts
             public string AppClientId { get; set; }
             public string MsalCacheFileName { get; set; }
             public string AppRedirectUrl { get; set; }
+            public bool AutomaticFolderCreationEnabled { get; set; }
         }
 
         public class MicrosoftOneDriveSettings

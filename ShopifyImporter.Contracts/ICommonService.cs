@@ -9,6 +9,6 @@ namespace ShopifyImporter.Contracts
     public interface ICommonService
     {
         Task Execute();
-        Task Authenticate();
+        Task<(IEnumerable<string>, IEnumerable<string>, IEnumerable<string>)> CheckFileStorageConfiguration();
     }
 }
