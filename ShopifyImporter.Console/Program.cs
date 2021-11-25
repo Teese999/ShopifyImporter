@@ -90,5 +90,15 @@ namespace ShopifyImporter.Console
                 }
             }
         }
+        public static Settings GetSettings()
+        {
+            var builder = new ConfigurationBuilder()
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile($"appsettings.json", false, true)
+               .AddEnvironmentVariables()
+               .Build();
+
+            return builder.GetSection("Settings").Get<Settings>();
+        }
     }
 }

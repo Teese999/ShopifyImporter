@@ -27,6 +27,10 @@ namespace ShopifyImporter.Services
             container.RegisterType<ICommonService, CommonService>(new TLifetime());
             container.RegisterType<IEmailService, EmailService>(new TLifetime());
             container.RegisterType<IReportService, ReportService>(new TLifetime());
+
+            //Tests
+            //container.RegisterType<ExcelParserServiceTests>(new TLifetime());
+
         }
     }
 }

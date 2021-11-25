@@ -19,6 +19,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopifyImporter.Integration
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShopifyImporter.Contracts", "ShopifyImporter.Contracts\ShopifyImporter.Contracts.csproj", "{5F4A4E44-F597-4E9E-B6B5-912812AAE106}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{DBD13350-7351-4883-82AA-ADEBAC1BDFB1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShopifyImporter.Services.Tests", "ShopifyImporter.Services.Tests\ShopifyImporter.Services.Tests.csproj", "{DDF47E07-341F-4086-BF4D-DAF1F00E1D27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +53,10 @@ Global
 		{5F4A4E44-F597-4E9E-B6B5-912812AAE106}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5F4A4E44-F597-4E9E-B6B5-912812AAE106}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5F4A4E44-F597-4E9E-B6B5-912812AAE106}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DDF47E07-341F-4086-BF4D-DAF1F00E1D27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DDF47E07-341F-4086-BF4D-DAF1F00E1D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DDF47E07-341F-4086-BF4D-DAF1F00E1D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DDF47E07-341F-4086-BF4D-DAF1F00E1D27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -59,6 +67,7 @@ Global
 		{29FCF03E-EE13-4E94-923F-CFAE5DE1B7C8} = {1308BBAE-A95B-46B6-8DB5-958136227DD3}
 		{058C5ABB-B1F5-46A3-9FDC-F80F71BF095E} = {1308BBAE-A95B-46B6-8DB5-958136227DD3}
 		{5F4A4E44-F597-4E9E-B6B5-912812AAE106} = {7EDFEBAA-19A8-4EFE-A6BE-F3E01BFAE14A}
+		{DDF47E07-341F-4086-BF4D-DAF1F00E1D27} = {DBD13350-7351-4883-82AA-ADEBAC1BDFB1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {D3A3BDCF-CE7B-4C90-A0C5-272E78C1B35A}
