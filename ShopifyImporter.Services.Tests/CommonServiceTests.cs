@@ -39,6 +39,7 @@ namespace ShopifyImporter.Services.Tests
             (IEnumerable<string>, IEnumerable<string>, IEnumerable<string>) filesResult = new();
             try
             {
+                //osipenkom: здесь можно без .Result
                 filesResult = _commonService.CheckFileStorageConfiguration().Result;
                 Assert.IsTrue(filesResult.Item1.Any());
             }
