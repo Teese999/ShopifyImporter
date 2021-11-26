@@ -19,6 +19,7 @@ namespace ShopifyImporter.Services.Tests
 {
     public abstract class AbstractTest
     {
+        //osipenkom: неверное именование публичных полей и свойств
         public IUnityContainer _container = new UnityContainer();
         public Settings _settings;
         protected AbstractTest()
@@ -41,10 +42,12 @@ namespace ShopifyImporter.Services.Tests
             container.RegisterType<IEmailService, EmailService>(new TLifetime());
             container.RegisterType<IReportService, ReportService>(new TLifetime());
         }
+        //osipenkom: не понимаю, зачем такая сложная система регистрации settings, требуется объяснение
         public static Settings GetSettings()
         {
             var builder = new ConfigurationBuilder()
                .SetBasePath(Directory.GetCurrentDirectory())
+               //osipenkom: а где сам файл? в проекте его не вижу
                .AddJsonFile($"appsettings.json", false, true)
                .AddEnvironmentVariables()
                .Build();

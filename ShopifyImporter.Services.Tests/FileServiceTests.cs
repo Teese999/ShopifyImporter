@@ -23,6 +23,7 @@ namespace ShopifyImporter.Services.Tests
         [TestMethod()]
         public void DownloadFilesTest()
         {
+            //osipenkom: можно без .Result
             var files = _fileService.DownloadFiles().Result;
             Assert.IsNotNull(files);
             Assert.IsTrue(files.Any());
@@ -35,6 +36,8 @@ namespace ShopifyImporter.Services.Tests
             Assert.IsNull(uploadTask.Exception);
 
         }
+        //osipenkom: хороший кейс, но у меня такой тест не работает. потому что у меня в папке на ПК нет такого файла. файл должен лежать прям в папке в тесте,
+        //а путь к папке на ПК должен указывать на эту папку
         [TestMethod()]
         public void UploadFileTest_returned_aggregateException()
         {
@@ -42,6 +45,8 @@ namespace ShopifyImporter.Services.Tests
             Assert.IsNotNull(uploadTask.Exception);
 
         }
+        //osipenkom: хороший кейс, но у меня такой тест не работает. потому что у меня в папке на ПК нет такого файла. файл должен лежать прям в папке в тесте,
+        //а путь к папке на ПК должен указывать на эту папку
         [TestMethod()]
         public void DeleteFileTest_returned_success()
         {
@@ -55,6 +60,7 @@ namespace ShopifyImporter.Services.Tests
             List<string> folders = new();
             try
             {
+                //osipenkom: можно без .Result
                 folders = _fileService.ListRootFolders().Result.ToList();
             }
             catch (Exception e)
@@ -71,6 +77,7 @@ namespace ShopifyImporter.Services.Tests
         {
             try
             {
+                //osipenkom: по факту не fodlers, а foldersTask. у меня этот тест не выполняется
                 var folders = _fileService.CheckFolderExists(_settings.Azure.MicrosoftOneDrive.IncomingFolderName);
             }
             catch (Exception e)

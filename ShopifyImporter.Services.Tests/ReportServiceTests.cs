@@ -36,6 +36,11 @@ namespace ShopifyImporter.Services.Tests
             var answer = _reportService.Build(inventories, fileName);
             Assert.IsTrue(answer.Length > 0);
         }
+
+        //osipenkom: я думаю, что здесь мы не должны ожидать необработанную ошибку в виде NullReferenceException, а должны ожидать, что тест выполнится успешно.
+        //Этот тест сфэйлится и это будет значить, что метод написан с ошибками.
+        //Мы должны абстрагироваться от того, что реальный метод уже написан и написать такие тесты, которые по нашему мнению могут сломать метод (вызвать нобработанную ошибку)
+        //Ты сделал правильную попытку, что отправил в списке null и ты должен убедиться, что метод эту ситуацию будет в состоянии обработать, но не кинет NullReferenceException
         [TestMethod()]
         public void BuildTest_returned_nullException()
         {
