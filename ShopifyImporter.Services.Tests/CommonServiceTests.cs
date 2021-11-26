@@ -16,7 +16,7 @@ namespace ShopifyImporter.Services.Tests
         ICommonService _commonService;
         public CommonServiceTests()
         {
-            _commonService = _container.Resolve<ICommonService>();
+            _commonService = Container.Resolve<ICommonService>();
         }
 
         [TestMethod()]
@@ -34,13 +34,12 @@ namespace ShopifyImporter.Services.Tests
         }
 
         [TestMethod()]
-        public void CheckFileStorageConfigurationTest()
+        public async Task CheckFileStorageConfigurationTest()
         {
             (IEnumerable<string>, IEnumerable<string>, IEnumerable<string>) filesResult = new();
             try
             {
-                //osipenkom: здесь можно без .Result
-                filesResult = _commonService.CheckFileStorageConfiguration().Result;
+                filesResult = await _commonService.CheckFileStorageConfiguration();
                 Assert.IsTrue(filesResult.Item1.Any());
             }
             catch (Exception e)

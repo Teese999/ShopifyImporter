@@ -19,18 +19,27 @@ namespace ShopifyImporter.Services.Tests
 {
     public abstract class AbstractTest
     {
-        //osipenkom: неверное именование публичных полей и свойств
-        public IUnityContainer _container = new UnityContainer();
-        public Settings _settings;
+       
+        public IUnityContainer Container = new UnityContainer();
+        public Settings Settings;
         protected AbstractTest()
         {
-            RegisterTypes<HierarchicalLifetimeManager>(_container);
-            _settings = GetSettings();
-            _container.RegisterInstance(_settings);
+            ConfigureContainer<HierarchicalLifetimeManager>(Container);
+            Settings = Container.Resolve<Settings>();
         }
-        public static void RegisterTypes<TLifetime>(IUnityContainer container)
+        public static void ConfigureContainer<TLifetime>(IUnityContainer container)
                 where TLifetime : ITypeLifetimeManager, new()
         {
+            var builder = new ConfigurationBuilder()
+               .SetBasePath(Directory.GetCurrentDirectory())
+               .AddJsonFile($"Files/appsettings.json", false, true)
+               .AddEnvironmentVariables()
+               .Build();
+            
+            var settings = builder.GetSection("Settings").Get<Settings>();
+
+            container.RegisterInstance(settings);
+
             container.RegisterType<IMicrosoftOneDriveWrapper, MicrosoftOneDriveWrapper>(new TLifetime());
             container.RegisterType<IMicrosoftGraphWrapper, MicrosoftGraphWrapper>(new TLifetime());
             container.RegisterType<IShopifyWrapper, ShopifyWrapper>(new TLifetime());
@@ -41,18 +50,6 @@ namespace ShopifyImporter.Services.Tests
             container.RegisterType<ICommonService, CommonService>(new TLifetime());
             container.RegisterType<IEmailService, EmailService>(new TLifetime());
             container.RegisterType<IReportService, ReportService>(new TLifetime());
-        }
-        //osipenkom: не понимаю, зачем такая сложная система регистрации settings, требуется объяснение
-        public static Settings GetSettings()
-        {
-            var builder = new ConfigurationBuilder()
-               .SetBasePath(Directory.GetCurrentDirectory())
-               //osipenkom: а где сам файл? в проекте его не вижу
-               .AddJsonFile($"appsettings.json", false, true)
-               .AddEnvironmentVariables()
-               .Build();
-
-            return builder.GetSection("Settings").Get<Settings>();
         }
     }
 

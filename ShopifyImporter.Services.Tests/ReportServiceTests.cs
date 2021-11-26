@@ -20,7 +20,7 @@ namespace ShopifyImporter.Services.Tests
 
         public ReportServiceTests()
         {
-            _reportService = _container.Resolve<IReportService>();
+            _reportService = Container.Resolve<IReportService>();
         }
 
         [TestMethod()]
@@ -37,12 +37,8 @@ namespace ShopifyImporter.Services.Tests
             Assert.IsTrue(answer.Length > 0);
         }
 
-        //osipenkom: я думаю, что здесь мы не должны ожидать необработанную ошибку в виде NullReferenceException, а должны ожидать, что тест выполнится успешно.
-        //Этот тест сфэйлится и это будет значить, что метод написан с ошибками.
-        //Мы должны абстрагироваться от того, что реальный метод уже написан и написать такие тесты, которые по нашему мнению могут сломать метод (вызвать нобработанную ошибку)
-        //Ты сделал правильную попытку, что отправил в списке null и ты должен убедиться, что метод эту ситуацию будет в состоянии обработать, но не кинет NullReferenceException
         [TestMethod()]
-        public void BuildTest_returned_nullException()
+        public void BuildTest_NullItem()
         {
             var inventories = new List<InventoryDto>();
             inventories.Add(new InventoryDto() { Sku = "001", ErrorMessage = "errorMessage1", HasError = false, Quantity = 1 });
@@ -51,8 +47,31 @@ namespace ShopifyImporter.Services.Tests
             inventories.Add(new InventoryDto() { Sku = "004", ErrorMessage = "errorMessage4", HasError = true, Quantity = 4 });
             inventories.Add(null);
             string fileName = "testFileName";
-            
-            Assert.ThrowsException<NullReferenceException>(() => { _reportService.Build(inventories, fileName); });
+            try
+            {
+                _reportService.Build(inventories, fileName);
+            }
+            catch (Exception e)
+            {
+
+                Assert.Fail(e.ToString());
+            }
+
+        }
+        [TestMethod()]
+        public void BuildTest_NullCollection()
+        {
+            string result = null;
+            try
+            {
+                result = _reportService.Build(null, "testFileName");
+            }
+            catch (Exception e)
+            {
+
+                Assert.Fail(e.ToString());
+            }
+            Assert.AreEqual(result, "Inventories was null");
         }
     }
 }

@@ -18,7 +18,7 @@ namespace ShopifyImporter.Services.Tests
         {                   
             string filename = @"Schmidts Inventory Report.xlsx";
             int expected = 1808;
-            var inventories = _container.Resolve<IExcelParserService>().ParseFile(filename);
+            var inventories = Container.Resolve<IExcelParserService>().ParseFile(filename);
             Assert.AreEqual(expected, inventories.Count());
         }
         [TestMethod]
@@ -26,7 +26,7 @@ namespace ShopifyImporter.Services.Tests
         {
             string filename = @"Schmidts Inventory Report1.xlsx";
 
-            Assert.ThrowsException<FileNotFoundException>(() => { _container.Resolve<IExcelParserService>().ParseFile(filename); });
+            Assert.ThrowsException<FileNotFoundException>(() => { Container.Resolve<IExcelParserService>().ParseFile(filename); });
         }
     }
 }

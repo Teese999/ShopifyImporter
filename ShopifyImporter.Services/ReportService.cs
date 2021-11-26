@@ -12,6 +12,16 @@ namespace ShopifyImporter.Services
     {
         public string Build(IEnumerable<InventoryDto> inventories, string fileName)
         {
+            if (inventories == null)
+            {
+                return "Inventories was null";
+            }
+            if (inventories.Any(x => x == null))
+            {
+                List<InventoryDto> inventoriesList = inventories.ToList();
+                inventoriesList.RemoveAll(x => x == null);
+                inventories = inventoriesList.ToList();
+            }
             var successfullInventories = inventories.Where(i => !i.HasError);
             var failedInventories = inventories.Where(i => i.HasError);
             var strBuilder = new StringBuilder();

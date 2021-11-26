@@ -18,13 +18,13 @@ namespace ShopifyImporter.Services.Tests
 
         public ShopifyServiceTests()
         {
-            _shopifyWrapper = _container.Resolve<IShopifyWrapper>();
+            _shopifyWrapper = Container.Resolve<IShopifyWrapper>();
         }
 
         //osipenkom: это уже не модульный тест, а интеграционный. здесь можно протестировать множества различных сценариев, т.к. метод Run содердит if-ы и try/catch-и.
         //по хорошему, кол-во тестов для этого метода должно равняться декартову произведению количества условий внутри него
         [TestMethod()]
-        public void UpdateInventoriesAsyncTest()
+        public async Task UpdateInventoriesAsyncTest()
         {
             var inventories = new List<InventoryDto>();
             inventories.Add(new InventoryDto() { Sku = "001", ErrorMessage = "errorMessage1", HasError = false, Quantity = 1 });
@@ -35,8 +35,7 @@ namespace ShopifyImporter.Services.Tests
            
             try
             {
-                //osipenkom: .Result не должно быть, метод теста может быть асинхронным сам по себе
-                var answer = _shopifyWrapper.Run(inventories).Result;
+                var answer = await _shopifyWrapper.Run(inventories);
             }
             catch (Exception e)
             {

@@ -15,11 +15,10 @@ namespace ShopifyImporter.Services.Tests
     [TestClass()]
     public class EmailServiceTests : AbstractTest
     {
-        IEmailService _emailService;
-
+        private IEmailService _emailService;
         public EmailServiceTests()
         {
-            _emailService = _container.Resolve<IEmailService>();
+            _emailService = Container.Resolve<IEmailService>();
         }
 
         [TestMethod()]
@@ -27,7 +26,7 @@ namespace ShopifyImporter.Services.Tests
         {
             try
             {
-                _emailService.Send(_settings.Smtp.EmailFrom, _settings.Smtp.EmailTo, "test", "test");
+                _emailService.Send(Settings.Smtp.EmailFrom, Settings.Smtp.EmailTo, "test", "test");
             }
             catch (Exception e)
             {

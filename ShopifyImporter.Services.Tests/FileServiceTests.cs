@@ -16,15 +16,15 @@ namespace ShopifyImporter.Services.Tests
         private IFileService _fileService;
         public FileServiceTests()
         {
-            _fileService = _container.Resolve<IFileService>();
+            _fileService = Container.Resolve<IFileService>();
         }
 
 
         [TestMethod()]
-        public void DownloadFilesTest()
+        public async Task DownloadFilesTest()
         {
-            //osipenkom: можно без .Result
-            var files = _fileService.DownloadFiles().Result;
+
+            var files = await _fileService.DownloadFiles();
             Assert.IsNotNull(files);
             Assert.IsTrue(files.Any());
         }
@@ -36,8 +36,7 @@ namespace ShopifyImporter.Services.Tests
             Assert.IsNull(uploadTask.Exception);
 
         }
-        //osipenkom: хороший кейс, но у меня такой тест не работает. потому что у меня в папке на ПК нет такого файла. файл должен лежать прям в папке в тесте,
-        //а путь к папке на ПК должен указывать на эту папку
+
         [TestMethod()]
         public void UploadFileTest_returned_aggregateException()
         {
@@ -45,8 +44,7 @@ namespace ShopifyImporter.Services.Tests
             Assert.IsNotNull(uploadTask.Exception);
 
         }
-        //osipenkom: хороший кейс, но у меня такой тест не работает. потому что у меня в папке на ПК нет такого файла. файл должен лежать прям в папке в тесте,
-        //а путь к папке на ПК должен указывать на эту папку
+
         [TestMethod()]
         public void DeleteFileTest_returned_success()
         {
@@ -55,37 +53,33 @@ namespace ShopifyImporter.Services.Tests
         }
 
         [TestMethod()]
-        public void ListRootFoldersTest()
+        public async Task ListRootFoldersTest()
         {
-            List<string> folders = new();
             try
             {
-                //osipenkom: можно без .Result
-                folders = _fileService.ListRootFolders().Result.ToList();
+                var folders = await _fileService.ListRootFolders();
+                Assert.IsTrue(folders != null);
             }
             catch (Exception e)
             {
 
                 Assert.Fail(e.Message);
-            }
-
-            Assert.IsTrue(folders != null);
+            }          
         }
 
         [TestMethod()]
-        public void CheckFolderExistsTest()
+        public void CheckFoldersTaskExistsTest()
         {
             try
             {
-                //osipenkom: по факту не fodlers, а foldersTask. у меня этот тест не выполняется
-                var folders = _fileService.CheckFolderExists(_settings.Azure.MicrosoftOneDrive.IncomingFolderName);
+                var folders = _fileService.CheckFolderExists(Settings.Azure.MicrosoftOneDrive.IncomingFolderName);
+                System.Console.WriteLine(Settings.Azure.MicrosoftOneDrive.IncomingFolderName);
             }
             catch (Exception e)
             {
 
                 Assert.Fail(e.Message);
-            }
-            
+            }           
         }
 
         [TestMethod()]
