@@ -23,4 +23,21 @@
     <ProjectReference Include="..\ShopifyImporter.Services\ShopifyImporter.Services.csproj" />
   </ItemGroup>
 
+
+
+	<ItemGroup>
+	  <Folder Include="Files\" />
+	</ItemGroup>
+
+
+
+	<ItemGroup>
+	  <None Update="Files\22.txt">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	  <None Update="Files\Schmidts Inventory Report.xlsx">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>
