@@ -41,7 +41,7 @@ namespace ShopifyImporter.Services
                             var inventory = new InventoryDto();
 
                             var sku = table.Rows[i][0]?.ToString()?.Trim();
-                            var quantityString = table.Rows[i][2]?.ToString();
+                            var quantityString = table.Rows[i][2]?.ToString().Trim();
 
                             if (!string.IsNullOrEmpty(sku))
                             {

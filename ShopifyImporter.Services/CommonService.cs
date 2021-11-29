@@ -1,4 +1,5 @@
-﻿using ShopifyImporter.Contracts;
+﻿using Serilog;
+using ShopifyImporter.Contracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,9 +17,10 @@ namespace ShopifyImporter.Services
         private IEmailService _emailService;
         private IReportService _reportService;
         private IShopifyService _shopifyService;
+        private ILogger _logger;
 
         public CommonService(IFileService fileService, IExcelParserService excelParserService, IEmailService emailService,
-            IReportService reportService, IShopifyService shopifyService, Settings settings)
+            IReportService reportService, IShopifyService shopifyService, Settings settings, ILogger logger)
         {
             _settings = settings;
             _fileService = fileService;
@@ -26,6 +28,7 @@ namespace ShopifyImporter.Services
             _emailService = emailService;
             _reportService = reportService;
             _shopifyService = shopifyService;
+            _logger = logger;
         }
 
         public async Task Execute()
@@ -39,6 +42,7 @@ namespace ShopifyImporter.Services
             }
             catch (Exception e)
             {
+                _logger.Error(e, e.Message);
                 report = e.Message;
                 _emailService.Send(_settings.Smtp.EmailFrom, _settings.Smtp.EmailTo, $"Shopify sync report {DateTime.UtcNow}", report);
             }
@@ -56,9 +60,11 @@ namespace ShopifyImporter.Services
                 }
                 catch (Exception e)
                 {
+                    _logger.Error(e, e.Message);
                     report = e.Message;
                 }
 
+                _logger.Information(report);
                 _emailService.Send(_settings.Smtp.EmailFrom, _settings.Smtp.EmailTo, $"Shopify sync report {DateTime.UtcNow}", report);
             }
         }

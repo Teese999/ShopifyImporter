@@ -1,4 +1,5 @@
-﻿using ShopifyImporter.Contracts;
+﻿using Serilog;
+using ShopifyImporter.Contracts;
 using ShopifyImporter.Contracts.Models;
 using ShopifyImporter.Integrations.Shopify.Contracts;
 using ShopifySharp;
@@ -15,16 +16,22 @@ namespace ShopifyImporter.Integrations.Shopify
     {
         private string _shopUrl { get; set; }
         private string _shopPassword { get; set; }
+        private ILogger _logger;
         private string _shopApiKey { get; set; }
         private const int _productsPerRequest = 250;
-        public ShopifyWrapper(Settings settings)
+        private const long _locationId = 64850624673;
+        public ShopifyWrapper(Settings settings, ILogger logger)
         {
             _shopUrl = settings.Shopify.ShopUrl;
             _shopPassword = settings.Shopify.Password;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<InventoryDto>> Run(IEnumerable<InventoryDto> inventories)
         {
+            //var service = new LocationService(_shopUrl, _shopPassword);
+            //var locations = await service.ListAsync();
+
             var productService = new ProductService(_shopUrl, _shopPassword);
             var filter = new ProductListFilter()
             {
@@ -33,7 +40,7 @@ namespace ShopifyImporter.Integrations.Shopify
 
             List<Product> allProducts = new List<Product>();
             var totalCount = await productService.CountAsync();
-            Console.WriteLine($"{totalCount} products to load");
+            _logger.Information($"{totalCount} products to load");
 
             var products = await productService.ListAsync(filter);
 
@@ -50,11 +57,12 @@ namespace ShopifyImporter.Integrations.Shopify
                     await Task.Delay((int)delay);
                 }
 
-                Console.WriteLine($"{allProducts.Count} products loaded");
+                _logger.Information($"{allProducts.Count} products loaded");
             }
 
             foreach (var inventory in inventories)
             {
+
                 var sw = Stopwatch.StartNew();
 
                 var product = allProducts.FirstOrDefault(x => x.Variants.Any(z => z.SKU == inventory.Sku));
@@ -75,10 +83,16 @@ namespace ShopifyImporter.Integrations.Shopify
                     continue;
                 }
 
-                variant.InventoryQuantity = inventory.Quantity;
                 try
                 {
-                    await productService.UpdateAsync(product.Id.Value, product);
+                    var invLocService = new InventoryLevelService(_shopUrl, _shopPassword);
+                    var inventoryLevel = new InventoryLevel()
+                    {
+                        InventoryItemId = variant.InventoryItemId,
+                        LocationId = _locationId,
+                        Available = inventory.Quantity
+                    };
+                    await invLocService.SetAsync(inventoryLevel);
                 }
                 catch (Exception ex)
                 {
@@ -95,7 +109,7 @@ namespace ShopifyImporter.Integrations.Shopify
                     await Task.Delay((int)delay);
                 }
 
-                Console.WriteLine($"SKU: {inventory.Sku} InventoryQuantity: {inventory.Quantity}");
+                _logger.Information($"SKU: {inventory.Sku} InventoryQuantity: {inventory.Quantity}");
 
             }
             return inventories;

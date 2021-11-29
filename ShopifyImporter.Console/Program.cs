@@ -30,20 +30,14 @@ namespace ShopifyImporter.Console
             var logger = Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Debug()
                 .WriteTo.Console()
-                .WriteTo.File("logs/myapp.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.File("logs/myapp.txt", rollingInterval: RollingInterval.Hour)
                 .CreateLogger();
+
             _container.RegisterInstance(logger);
 
             var log = _container.Resolve<ILogger>();
 
-            if (args != null && args.Length > 0)
-                log.Information("args list:");
-            {
-                foreach (var arg in args)
-                {
-                    log.Information(arg);
-                }
-            }
+            log.Information("Application Started");
 
             ContainerConfiguration.RegisterTypes<HierarchicalLifetimeManager>(_container);
 
@@ -141,7 +135,8 @@ namespace ShopifyImporter.Console
                     System.Console.WriteLine($"Error: {e.Message}");
                 }
             }
-        }
 
+            log.Information("Application Finished");
+        }
     }
 }
