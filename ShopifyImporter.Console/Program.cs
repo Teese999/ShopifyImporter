@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Serilog;
 using ShopifyImporter.Contracts;
 using ShopifyImporter.Services;
 using System;
@@ -25,6 +26,25 @@ namespace ShopifyImporter.Console
 
             var settings = builder.GetSection("Settings").Get<Settings>();
             _container.RegisterInstance(settings);
+
+            var logger = Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Debug()
+            .WriteTo.Console()
+            .WriteTo.File("logs/myapp.txt", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
+            _container.RegisterInstance(logger);
+
+            var log = _container.Resolve<ILogger>();
+
+            if (args != null && args.Length > 0)
+                log.Information("args list:");
+            {
+                foreach (var arg in args)
+                {
+                    log.Information(arg);
+                }
+            }
+            
 
             ContainerConfiguration.RegisterTypes<HierarchicalLifetimeManager>(_container);
 
