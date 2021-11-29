@@ -32,7 +32,7 @@ namespace ShopifyImporter.Services.Tests
         {
             var builder = new ConfigurationBuilder()
                .SetBasePath(Directory.GetCurrentDirectory())
-               .AddJsonFile($"Files/appsettings.json", false, true)
+               .AddJsonFile($"appsettings.json", false, true)
                .AddEnvironmentVariables()
                .Build();
             

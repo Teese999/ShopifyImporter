@@ -34,15 +34,14 @@ namespace ShopifyImporter.Services.Tests
         {
             var uploadTask = _fileService.UploadFile("Schmidts Inventory Report.xlsx");
             Assert.IsNull(uploadTask.Exception);
-
         }
 
         [TestMethod()]
         public void UploadFileTest_returned_aggregateException()
         {
-            var uploadTask = _fileService.UploadFile("Schmidts Inventory Report.xlsx11");
-            Assert.IsNotNull(uploadTask.Exception);
+            var uploadTas = _fileService.UploadFile("test");
 
+            Assert.IsNull(uploadTas.Exception);     
         }
 
         [TestMethod()]
@@ -53,11 +52,11 @@ namespace ShopifyImporter.Services.Tests
         }
 
         [TestMethod()]
-        public async Task ListRootFoldersTest()
+        public async Task ListDriveFoldersTest()
         {
             try
             {
-                var folders = await _fileService.ListRootFolders();
+                var folders = await _fileService.ListDriveFolders();
                 Assert.IsTrue(folders != null);
             }
             catch (Exception e)
