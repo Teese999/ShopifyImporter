@@ -12,19 +12,16 @@ namespace ShopifyImporter.Integrations.MicrosoftGraph
 {
     public class MicrosoftGraphWrapper : IMicrosoftGraphWrapper
     {
-        private string _clientId;
-        private string[] _scopes;
-        private string _msalCacheFilename;
+        private string _msalCacheFilename => string.Format(_settings.Azure.MicrosoftGraph.MsalCacheFileName, _settings.Azure.MicrosoftGraph.MsalEncryptCacheFile ? "encrypted" : "");
 
+        private Settings _settings;
         private IPublicClientApplication _identityClientApp;
         private static GraphServiceClient _graphClient;
         public MicrosoftGraphWrapper(Settings settings)
         {
-            _clientId = settings.Azure.MicrosoftGraph.AppClientId;
-            _scopes = settings.Azure.MicrosoftGraph.Scopes;
-            _msalCacheFilename = settings.Azure.MicrosoftGraph.MsalCacheFileName;
+            _settings = settings;
             _identityClientApp = PublicClientApplicationBuilder
-                .Create(_clientId)
+                .Create(settings.Azure.MicrosoftGraph.AppClientId)
                 .WithRedirectUri(settings.Azure.MicrosoftGraph.AppRedirectUrl)
                 .Build();
         }
@@ -63,10 +60,15 @@ namespace ShopifyImporter.Integrations.MicrosoftGraph
 
         private StorageCreationProperties ConfigureSecureStorage()
         {
-            return new StorageCreationPropertiesBuilder(
-                                   _msalCacheFilename,
-                                   MsalCacheHelper.UserRootDirectory)
-                               .Build();
+            if (_settings.Azure.MicrosoftGraph.MsalEncryptCacheFile)
+            {
+                return new StorageCreationPropertiesBuilder(_msalCacheFilename, MsalCacheHelper.UserRootDirectory)
+                    .Build();
+            }
+
+            return new StorageCreationPropertiesBuilder(_msalCacheFilename, MsalCacheHelper.UserRootDirectory)
+                .WithUnprotectedFile()
+                .Build();
 
         }
 
@@ -79,11 +81,11 @@ namespace ShopifyImporter.Integrations.MicrosoftGraph
                 var accounts = await _identityClientApp.GetAccountsAsync().ConfigureAwait(false);
                 var firstAccount = accounts.FirstOrDefault();
 
-                authResult = await _identityClientApp.AcquireTokenSilent(_scopes, firstAccount).ExecuteAsync();
+                authResult = await _identityClientApp.AcquireTokenSilent(_settings.Azure.MicrosoftGraph.Scopes, firstAccount).ExecuteAsync();
             }
             catch (Exception)
             {
-                authResult = await _identityClientApp.AcquireTokenInteractive(_scopes).ExecuteAsync();
+                authResult = await _identityClientApp.AcquireTokenInteractive(_settings.Azure.MicrosoftGraph.Scopes).ExecuteAsync();
             }
 
             return authResult;

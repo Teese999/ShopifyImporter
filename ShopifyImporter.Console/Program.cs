@@ -34,10 +34,43 @@ namespace ShopifyImporter.Console
             }
 
             var commonService = _container.Resolve<ICommonService>();
+            var fileService = _container.Resolve<IFileService>();
 
-            if (args.Length > 0 && args[0] == "-r")
+            if (args.Length > 0)
             {
-                await commonService.Execute();
+                if (args[0] == "-run")
+                {
+                    await commonService.Execute();
+                }
+                else if (args[0] == "-drives")
+                {
+                    var availableDrives = await fileService.GetDrives();
+                    System.Console.WriteLine("List of available drives:");
+                    if (availableDrives != null)
+                    {
+                        foreach (var availableDrive in availableDrives)
+                        {
+                            System.Console.WriteLine($"- Drive info:");
+                            System.Console.WriteLine(availableDrive.OriginalData);
+                        }
+                    }
+                }
+                else if (args[0] == "-drivefolders")
+                {
+                    var folders = await fileService.ListDriveFolders();
+                    System.Console.WriteLine($"List of available folders for drive");
+                    if (folders != null && folders.Any())
+                    {
+                        foreach (var folder in folders)
+                        {
+                            System.Console.WriteLine($"- \"{folder}\"");
+                        }
+                    }
+                    else
+                    {
+                        System.Console.WriteLine("- No folders found.");
+                    }
+                }
             }
             else
             {
@@ -90,6 +123,6 @@ namespace ShopifyImporter.Console
                 }
             }
         }
-      
+
     }
 }

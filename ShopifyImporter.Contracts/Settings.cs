@@ -22,15 +22,16 @@ namespace ShopifyImporter.Contracts
 
         public class AzureSettings
         {
-            public MicrosoftgraphSettings MicrosoftGraph { get; set; }
+            public MicrosoftGraphSettings MicrosoftGraph { get; set; }
             public MicrosoftOneDriveSettings MicrosoftOneDrive { get; set; }
         }
 
-        public class MicrosoftgraphSettings
+        public class MicrosoftGraphSettings
         {
             public string[] Scopes { get; set; }
             public string AppClientId { get; set; }
             public string MsalCacheFileName { get; set; }
+            public bool MsalEncryptCacheFile { get; set; }
             public string AppRedirectUrl { get; set; }
             public bool AutomaticFolderCreationEnabled { get; set; }
         }
@@ -39,6 +40,7 @@ namespace ShopifyImporter.Contracts
         {
             public string IncomingFolderName { get; set; }
             public string ProcessedFolderName { get; set; }
+            public string DriveId { get; set; }
         }
         public class SmtpSettings
         {

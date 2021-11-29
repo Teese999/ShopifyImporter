@@ -120,7 +120,7 @@ namespace ShopifyImporter.Services
 
             try
             {
-                folders = (await _fileService.ListRootFolders())?.ToList();
+                folders = (await _fileService.ListDriveFolders())?.ToList();
             }
             catch (Exception e)
             {

@@ -1,4 +1,5 @@
 ﻿using ShopifyImporter.Contracts;
+using ShopifyImporter.Contracts.Models;
 using ShopifyImporter.Integrations.MicrosoftOneDrive;
 using ShopifyImporter.Integrations.MicrosoftOneDrive.Contracts;
 using System.Collections.Generic;
@@ -20,22 +21,22 @@ namespace ShopifyImporter.Services
             _settings = settings;
         }
 
-        public async Task<IEnumerable<string>> ListRootFolders()
+        public async Task<IEnumerable<string>> ListDriveFolders()
         {
-            var wrapper = _container.Resolve<MicrosoftOneDriveWrapper>();
-            var folders = await wrapper.ListRootFolders();
+            var wrapper = _container.Resolve<IMicrosoftOneDriveWrapper>();
+            var folders = await wrapper.ListDriveFolders();
             return folders;
         }
 
         public async Task CheckFolderExists(string folderName)
         {
-            var wrapper = _container.Resolve<MicrosoftOneDriveWrapper>();
+            var wrapper = _container.Resolve<IMicrosoftOneDriveWrapper>();
             await wrapper.CheckFolderExists(folderName);
         }
 
         public async Task CreateFolder(string folderName)
         {
-            var wrapper = _container.Resolve<MicrosoftOneDriveWrapper>();
+            var wrapper = _container.Resolve<IMicrosoftOneDriveWrapper>();
             await wrapper.CreateFolder(folderName);
         }
 
@@ -57,6 +58,23 @@ namespace ShopifyImporter.Services
             var wrapper = _container.Resolve<IMicrosoftOneDriveWrapper>();
             File.Delete(Path.Combine(_settings.IncomingDownloadFolderName, fileName));
             await wrapper.DeleteFile(fileName);
+        }
+
+        public async Task<IEnumerable<DriveDto>> GetDrives()
+        {
+            var wrapper = _container.Resolve<IMicrosoftOneDriveWrapper>();
+            var data = await wrapper.GetDrives();
+            var result = data?.Select(d => new DriveDto
+            {
+                Id = d.Id,
+                OwnerId = d.OwnerId,
+                OwnerName = d.OwnerName,
+                Type = d.Type,
+                Description = d.Description,
+                Name = d.Name,
+                OriginalData = d.OriginalData
+            });
+            return result;
         }
     }
 }

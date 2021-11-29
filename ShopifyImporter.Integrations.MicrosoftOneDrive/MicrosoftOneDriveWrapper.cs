@@ -1,4 +1,5 @@
-﻿    using Microsoft.Graph;
+﻿using Microsoft.Graph;
+using Newtonsoft.Json;
 using ShopifyImporter.Contracts;
 using ShopifyImporter.Integrations.MicrosoftGraph;
 using ShopifyImporter.Integrations.MicrosoftGraph.Contracts;
@@ -27,16 +28,18 @@ namespace ShopifyImporter.Integrations.MicrosoftOneDrive
             _settings = settings;
         }
 
-        public async Task<IEnumerable<string>> ListRootFolders()
+        public async Task<IEnumerable<string>> ListDriveFolders()
         {
+            var driveId = await GetUserDriveId();
+
             try
-            {
+            {    
                 var wrapper = _container.Resolve<MicrosoftGraphWrapper>();
                 var graphClient = await wrapper.GetAuthenticatedClient();
 
                 var folderNames = new List<string>();
 
-                var item = await graphClient.Drive.Root.Request().Expand(i => i.Children).GetAsync();
+                var item = await graphClient.Me.Drives[driveId].Root.Request().Expand(i => i.Children).GetAsync();
 
                 foreach (var child in item.Children)
                 {
@@ -48,9 +51,13 @@ namespace ShopifyImporter.Integrations.MicrosoftOneDrive
 
                 return folderNames;
             }
-            catch (Exception e)
+            catch (ServiceException e)
             {
-                throw new Exception($"Microsoft OneDrive error: \"Root\" - {((ServiceException)e).Error.Message}");
+                throw new Exception($"Microsoft OneDrive error: Drive with id \"{driveId}\" - {((ServiceException)e).Error.Message}");
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -63,14 +70,20 @@ namespace ShopifyImporter.Integrations.MicrosoftOneDrive
 
                 var item = await GetFolder(folderName, graphClient);
             }
-            catch (Exception e)
+            catch (ServiceException e)
             {
                 throw new Exception($"Microsoft OneDrive error: {folderName} - {((ServiceException)e).Error.Message}");
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
         public async Task CreateFolder(string folderName)
         {
+            var driveId = await GetUserDriveId();
+
             try
             {
                 var wrapper = _container.Resolve<MicrosoftGraphWrapper>();
@@ -88,11 +101,15 @@ namespace ShopifyImporter.Integrations.MicrosoftOneDrive
                     }
                 };
 
-                await graphClient.Drive.Root.Children.Request().AddAsync(driveItem);
+                await graphClient.Me.Drives[driveId].Root.Children.Request().AddAsync(driveItem);
             }
-            catch (Exception e)
+            catch (ServiceException e)
             {
                 throw new Exception($"Microsoft OneDrive error: {folderName} - {((ServiceException)e).Error.Message}");
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
@@ -124,47 +141,103 @@ namespace ShopifyImporter.Integrations.MicrosoftOneDrive
 
                 return fileNames;
             }
-            catch (Exception e)
+            catch (ServiceException e)
             {
                 throw new Exception($"Microsoft OneDrive error: {_settings.Azure.MicrosoftOneDrive.IncomingFolderName} - {((ServiceException)e).Error.Message}");
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
         public async Task UploadFile(string fileName)
         {
+            var driveId = await GetUserDriveId();
+
             try
             {
                 var wrapper = _container.Resolve<IMicrosoftGraphWrapper>();
                 var graphClient = await wrapper.GetAuthenticatedClient();
                 using (FileStream fileStream = new FileStream(Path.Combine(_settings.IncomingDownloadFolderName, fileName), FileMode.Open, FileAccess.Read))
                 {
-                    await graphClient.Drive.Root.ItemWithPath($"/{_settings.Azure.MicrosoftOneDrive.ProcessedFolderName}/{fileName}").Content.Request().PutAsync<DriveItem>(fileStream);
+                    await graphClient.Me.Drives[driveId].Root.ItemWithPath($"/{_settings.Azure.MicrosoftOneDrive.ProcessedFolderName}/{fileName}").Content.Request().PutAsync<DriveItem>(fileStream);
                 }
             }
-            catch (Exception e)
+            catch (ServiceException e)
             {
                 throw new Exception($"Microsoft OneDrive error: {_settings.Azure.MicrosoftOneDrive.ProcessedFolderName}/{fileName} - {((ServiceException)e).Error.Message}");
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
         public async Task DeleteFile(string fileName)
         {
+            var driveId = await GetUserDriveId();
+
             try
             {
                 var wrapper = _container.Resolve<IMicrosoftGraphWrapper>();
                 var graphClient = await wrapper.GetAuthenticatedClient();
-                await graphClient.Drive.Root.ItemWithPath($"/{_settings.Azure.MicrosoftOneDrive.IncomingFolderName}/{fileName}").Request().DeleteAsync();
+                await graphClient.Me.Drives[driveId].Root.ItemWithPath($"/{_settings.Azure.MicrosoftOneDrive.IncomingFolderName}/{fileName}").Request().DeleteAsync();
             }
-            catch (Exception e)
+            catch (ServiceException e)
             {
                 throw new Exception($"Microsoft OneDrive error: {_settings.Azure.MicrosoftOneDrive.IncomingFolderName}/{fileName} - {((ServiceException)e).Error.Message}");
             }
+
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public async Task<IEnumerable<DriveModel>> GetDrives()
+        {
+            var wrapper = _container.Resolve<IMicrosoftGraphWrapper>();
+            var graphClient = await wrapper.GetAuthenticatedClient();
+            var drives = await graphClient.Me.Drives.Request().GetAsync();
+            var drivesResult = drives?.Select(d => new DriveModel
+            {
+                Id = d.Id,
+                Type = d.DriveType,
+                Name = d.Name,
+                Description = d.Description,
+                OwnerId = d.Owner?.User?.Id,
+                OwnerName = d.Owner?.User?.DisplayName,
+                OriginalData = JsonConvert.SerializeObject(d)
+            });
+
+            return drivesResult;
         }
 
         private async Task<DriveItem> GetFolder(string folderName, GraphServiceClient graphClient)
         {
-            var item = await graphClient.Drive.Root.ItemWithPath($"/{folderName}").Request().Expand(i => i.Children).GetAsync();
+            var driveId = await GetUserDriveId();
+            var item = await graphClient.Me.Drives[driveId].Root.ItemWithPath($"/{folderName}").Request().Expand(i => i.Children).GetAsync();
             return item;
+        }
+
+        private async Task<string> GetUserDriveId()
+        {
+            var driveId = _settings.Azure.MicrosoftOneDrive.DriveId;
+
+            if (string.IsNullOrEmpty(driveId))
+            {
+                var wrapper = _container.Resolve<IMicrosoftGraphWrapper>();
+                var graphClient = await wrapper.GetAuthenticatedClient();
+                var drives = await graphClient.Me.Drives.Request().GetAsync();
+                driveId = drives?.FirstOrDefault()?.Id;
+            }
+            if (string.IsNullOrEmpty(driveId))
+            {
+                throw new Exception($"Microsoft OneDrive error: DriveId parameter is not specified or drives do not exist for this user.");
+            }
+
+            return driveId;
         }
     }
 }
